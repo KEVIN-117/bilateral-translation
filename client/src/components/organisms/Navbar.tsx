@@ -1,6 +1,6 @@
+import { Cpu } from "lucide-react";
 import Link from "next/link";
 import { glassButtonVariants } from "@/components/atoms/GlassButton";
-import { Cpu } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -21,22 +21,46 @@ export function Navbar() {
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
-          <Link href="#mision" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+          <Link
+            href="#mision"
+            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >
             Nuestra Misión
           </Link>
-          <Link href="#blog" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+          <Link
+            href="/traductor"
+            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >
+            Traductor
+          </Link>
+          <Link
+            href="#blog"
+            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >
             Artículos
           </Link>
-          <Link href="#contacto" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+          <Link
+            href="#contacto"
+            className="text-sm font-medium text-gray-300 hover:text-white transition-colors"
+          >
             Contacto
           </Link>
         </nav>
 
         <div className="flex items-center gap-4">
-          <Link href="/login" className={glassButtonVariants({ variant: "ghost", className: "hidden md:inline-flex" })}>
+          <Link
+            href="/login"
+            className={glassButtonVariants({
+              variant: "ghost",
+              className: "hidden md:inline-flex",
+            })}
+          >
             Ingresar
           </Link>
-          <Link href="/register" className={glassButtonVariants({ variant: "primary" })}>
+          <Link
+            href="/register"
+            className={glassButtonVariants({ variant: "primary" })}
+          >
             Únete a SOCITEC
           </Link>
         </div>
