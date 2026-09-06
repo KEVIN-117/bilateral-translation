@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { StreamVideoClient } from "@/components/organisms/StreamVideoClient";
+import StreamVideo from "@/components/organisms/StreamVideo";
 
 export default function Home() {
   return (
     <main
       id="contenido"
-      className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12"
+      className="mx-auto w-full max-w-full flex-1 px-4 py-8 sm:px-6 sm:py-12"
     >
       <header className="mb-8 space-y-3">
         <p className="text-sm font-medium text-cyan-300">
@@ -31,13 +33,8 @@ export default function Home() {
               </p>
             </CardHeader>
             <CardContent className="space-y-5">
-              <div className="flex aspect-video items-center justify-center rounded-xl border border-dashed border-white/25 bg-black/30 p-6 text-center">
-                <div className="space-y-2">
-                  <p className="font-medium">Vista de la cámara</p>
-                  <p className="text-sm text-muted-foreground">
-                    La cámara aún no está habilitada.
-                  </p>
-                </div>
+              <div className="flex w-full items-center justify-center rounded-xl border border-dashed border-white/25 bg-black/30 p-4 text-center">
+                <StreamVideo />
               </div>
               <div className="rounded-xl border p-4">
                 <h3 className="mb-2 font-medium">Texto reconocido</h3>
