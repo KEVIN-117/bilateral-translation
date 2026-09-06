@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/atoms/Container";
-import { TextToSignTranslator } from "@/components/organisms/TextToSignTranslator";
+import { SignToTextPanel } from "@/components/organisms/SignToTextPanel";
 
 export const metadata: Metadata = {
-  title: "Texto → Seña | SOCITEC",
+  title: "Seña → Texto | SOCITEC",
   description:
-    "Busca una palabra y aprende cómo se realiza su seña en lengua de señas.",
+    "Reconocimiento de lengua de señas por cámara y traducción a texto.",
 };
 
-export default function TraductorPage() {
+export default function CamaraPage() {
   return (
     <Container className="py-10 sm:py-14 lg:py-20">
       <header className="mb-8 space-y-3 sm:mb-12">
@@ -16,16 +16,15 @@ export default function TraductorPage() {
           Bilateral Translation · MVP
         </p>
         <h1 className="font-bold text-3xl text-white sm:text-4xl lg:text-5xl">
-          Texto → <span className="text-gradient">Seña</span>
+          Seña → <span className="text-gradient">Texto</span>
         </h1>
         <p className="max-w-2xl text-gray-400 sm:text-lg">
-          Escribe la palabra que quieras aprender y reproduce el video de su
-          seña.
+          Muestra una seña a la cámara y el modelo la traduce a texto.
         </p>
       </header>
 
-      <div className="max-w-3xl">
-        <TextToSignTranslator />
+      <div className="max-w-2xl">
+        <SignToTextPanel />
       </div>
     </Container>
   );

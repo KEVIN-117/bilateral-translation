@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { Footer } from "@/components/organisms/Footer";
+import { Navbar } from "@/components/organisms/Navbar";
 
 export default function PublicLayout({
   children,
@@ -7,20 +8,20 @@ export default function PublicLayout({
 }>) {
   return (
     <>
-      <a href="#contenido" className="sr-only focus:not-sr-only focus:p-4">
+      <a
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-medium focus:text-black"
+        href="#contenido"
+      >
         Saltar al contenido
       </a>
-      <header className="border-b bg-black/20">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-5 sm:px-6">
-          <Link href="/" className="font-heading text-lg font-semibold">
-            Bilateral Translation
-          </Link>
-          <span className="text-sm text-muted-foreground">
-            SOCITEC · Prototipo
-          </span>
-        </div>
-      </header>
-      {children}
+
+      <Navbar />
+
+      <main className="flex-1 pt-16 md:pt-20" id="contenido">
+        {children}
+      </main>
+
+      <Footer />
     </>
   );
 }
