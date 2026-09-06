@@ -1,0 +1,41 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# AI / Agents
+.agents/
+.claude/
+
+# ML / Models
+*.h5
+*.keras
+*.pb
+*.tflite
+saved_model/
+checkpoints/
+
+# uv / packaging
+*.egg-info/
+.installed.cfg
+*.egg
+dist/
+build/
+
+# Jupyter Notebooks
+.ipynb_checkpoints

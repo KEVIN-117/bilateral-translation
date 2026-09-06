@@ -1,8 +1,11 @@
+import os
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import LSTM
 from fastapi import HTTPException
+from huggingface_hub import hf_hub_download
 from src.schemas import KeypointsInput, PredictionResponse
+from src.config import settings
 
 class CustomLSTM(LSTM):
     def __init__(self, **kwargs):
@@ -15,12 +18,31 @@ class InferenceModel:
     def __init__(self):
         self.model = None
 
-    def load(self, model_path: str):
-        self.model = tf.keras.models.load_model(
-            model_path, 
-            custom_objects={'LSTM': CustomLSTM}
-        )
-        print("Modelo cargado exitosamente.")
+    def load(self):
+        # Determine the path: Use local model_path if set and exists, otherwise download from HF
+        if settings.model_path and os.path.exists(settings.model_path):
+            print(f"Cargando modelo local desde {settings.model_path}...")
+            final_path = settings.model_path
+        else:
+            print(f"Descargando modelo desde Hugging Face ({settings.hf_repo_id}/{settings.hf_filename})...")
+            try:
+                final_path = hf_hub_download(
+                    repo_id=settings.hf_repo_id, 
+                    filename=settings.hf_filename
+                )
+                print("✅ Modelo descargado exitosamente desde Hugging Face.")
+            except Exception as e:
+                raise Exception(f"❌ Error descargando el modelo de Hugging Face: {e}")
+
+        # Cargar el modelo en TensorFlow
+        try:
+            self.model = tf.keras.models.load_model(
+                final_path, 
+                custom_objects={'LSTM': CustomLSTM}
+            )
+            print("✅ Modelo cargado en TensorFlow exitosamente.")
+        except Exception as e:
+            raise Exception(f"❌ Error cargando el modelo en Keras: {e}")
 
     def predict(self, input_data: KeypointsInput) -> PredictionResponse:
         if self.model is None:

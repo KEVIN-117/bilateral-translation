@@ -1,77 +1,42 @@
-# bilateral-translation 🚀
+# 🤟 Bilateral Translation System (MVP)
 
-Un proyecto de plataforma de blog moderno, escalable y con una arquitectura verdaderamente desacoplada (Headless CMS), construido para ofrecer una experiencia de usuario (UX) inmersiva, alto rendimiento SEO (ISR), y una administración de contenido robusta.
+Un sistema de traducción bidireccional de lenguaje de señas construido con inteligencia artificial y desarrollo web moderno. Este proyecto es un **MVP** (Producto Mínimo Viable) diseñado para traducir secuencias en lenguaje de señas a texto mediante una cámara web, y viceversa, utilizando un catálogo de videos para la traducción de texto a seña.
 
 ## 🏗️ Arquitectura del Proyecto
 
-El repositorio está estructurado como un **Monorepo** que separa rigurosamente las responsabilidades entre el gestor de contenido (Backend) y la capa de presentación (Frontend).
+El repositorio está estructurado en dos módulos principales completamente desacoplados:
 
-### ⚙️ Backend: `api/` (Fast API)
+### ⚙️ Backend: `api/` (FastAPI + TensorFlow)
+Un microservicio dedicado exclusivamente a la predicción y procesamiento de Machine Learning.
+- **Tecnologías:** FastAPI, TensorFlow / Keras, Python 3.13.
+- **Funcionalidad:** Carga un modelo neuronal pre-entrenado de forma aislada y expone endpoints ligeros para realizar inferencia sobre capturas.
 
-
-
-### 💻 Frontend: `client/` (Next.js App Router)
-El directorio `client/` contiene la capa de presentación construida con **Next.js**. Su arquitectura está orientada a componentes, server actions, e hidratación asíncrona (SSR/ISR).
-
-- **Stack**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, shadcn/ui.
-- **Estructura Interna (`client/src/`)**:
-  - `app/`: Directorio principal de enrutamiento (App Router). Contiene grupos de rutas como `(auth)` para login/registro, `dashboard` para el panel privado de los autores, y las páginas públicas (ej. `page.tsx`, `layout.tsx`, `globals.css`).
-  - `actions/`: Funciones Server Actions de Next.js para ejecutar mutaciones seguras en el servidor (ej. autenticación, creación de artículos).
-  - `components/`: Componentes UI reutilizables y modulares (basados en shadcn/ui y componentes atómicos).
-  - `context/`: Proveedores de estado global de React (React Context) para sesión, temas, etc.
-  - `datasource/`: Capa de abstracción de red (Fetch/Axios) responsable de la comunicación RESTful con la API de Strapi, tipada y estructurada.
-  - `hooks/`: Custom Hooks de React para abstraer la lógica compleja de los componentes de UI.
-  - `model/`: Definición de tipos, interfaces de TypeScript y esquemas de validación (Zod) que espejean la estructura de Strapi para garantizar End-to-End Type Safety.
-  - `lib/`: Utilidades generales (formateo de fechas, cn util para Tailwind, etc).
-  - `middleware.ts`: Interceptor en el Edge (Next.js Middleware) para proteger rutas privadas (Dashboard) y manejar redirecciones basadas en el JWT del usuario.
+### 💻 Frontend: `client/` (Next.js)
+La capa de presentación que interactúa directamente con el usuario, procesa la cámara y renderiza los resultados.
+- **Tecnologías:** Next.js (App Router), Tailwind CSS, shadcn/ui.
+- **Funcionalidad:** Interfaz gráfica para iniciar la cámara, previsualizar en tiempo real, enviar frames a la API de predicción y mostrar resultados o buscar en el diccionario (Texto -> Seña).
 
 ---
 
-## ✨ Características y Roadmap Funcional
+## 🚀 Guía de Inicialización Rápida
 
-El proyecto está en desarrollo iterativo, basándose en el framework CRISP-DM y prácticas HEFESTO v2.0 adaptadas. 
-
-- 🔒 **Autenticación y Roles:** Manejo de sesiones JWT manejadas de forma segura (Cookies HttpOnly) e interceptadas por el `middleware.ts`.
-- 📝 **Publicación Markdown:** El cliente renderiza el contenido almacenado en Strapi empleando `react-markdown` y asegurado contra inyecciones XSS usando `DOMPurify`.
-- 🚀 **Optimización SEO:** Renderizado Híbrido (ISR/SSG) para que los artículos carguen a la velocidad de la luz y metadatos dinámicos estructurados con Open Graph.
-- 💬 **Interacciones Comunitarias:** *(Planeado)* Sistema de comentarios y "Favoritos" en los artículos.
-- 🔍 **Filtros Avanzados:** *(Planeado)* Búsqueda Full-Text y exploración multi-etiqueta (Tags).
-- 🎨 **Experiencia Inmersiva:** Modo oscuro nativo implementado con `next-themes`, variables CSS inyectadas y utilidades de lectura (Barra de progreso, Tabla de Contenidos - ToC).
-
----
-
-## 🚀 Guía de Instalación Local (Paso a Paso)
-
-Requiere [Node.js](https://nodejs.org/) v18+ y un gestor de paquetes (`npm` o `pnpm`).
-
-### 1. Preparar el Entorno
-```bash
-git clone https://github.com/KEVIN-117/bilateral-translation.git
-cd bilateral-translation
-```
-
-### 2. Iniciar el API Backend (Strapi)
-El CMS debe estar corriendo primero para que el cliente pueda consumir sus tipos y datos.
+### 1. Iniciar la API (Backend)
 ```bash
 cd api
-npm install
-# Crea tu .env usando el archivo de ejemplo
-cp .env.example .env
-# Inicia la base de datos local y el servidor en modo desarrollo (Watch Mode)
-npm run develop
+# Asegúrate de tener 'uv' instalado para la gestión de dependencias y ejecución
+uv run uvicorn src.main:app --reload
 ```
-- **Endpoints REST:** `http://localhost:8000/...`
-- **Api Doc:** `http://localhost:8000/redoc`
+La API estará corriendo en `http://127.0.0.1:8000`.
 
-
-### 3. Iniciar el Cliente Web (Next.js)
-En una terminal nueva:
+### 2. Iniciar el Cliente Web (Frontend)
 ```bash
 cd client
 npm install
-# Crea tu archivo .env (requerido para apuntar a la API local)
-echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env
-# Levanta el servidor de desarrollo en el puerto 3000
 npm run dev
 ```
-- **Aplicación Frontend:** `http://localhost:3000`
+La aplicación web estará disponible en `http://localhost:3000`.
+
+---
+
+## 📌 Enfoque de Desarrollo
+Este proyecto se rige por metodologías ágiles e incrementales. Actualmente el desarrollo está organizado en Issues dentro del repositorio, enfocándose inicialmente en un MVP funcional para demostrar la viabilidad de la arquitectura técnica antes de integrar flujos complejos en tiempo real.

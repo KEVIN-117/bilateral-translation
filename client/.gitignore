@@ -32,7 +32,16 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+!.env.template
 
+# AI / Agents
+.agents/
+.claude/
+
+# IDE / Editor
+.vscode/
+.idea/
 # vercel
 .vercel
 

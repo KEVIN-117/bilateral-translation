@@ -7,7 +7,7 @@ from src.router import router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Cargar el modelo al iniciar
-    inference_model.load(settings.model_path)
+    inference_model.load()
     yield
     # Limpiar recursos si es necesario al apagar
     inference_model.model = None
