@@ -1,11 +1,11 @@
 import tensorflow as tf
+
+model = None
+
 from .router import api_router
 from core.config import settings
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from core.config import settings
-
-model = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

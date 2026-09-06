@@ -1,4 +1,4 @@
-from api import model
+import api
 from fastapi import HTTPException
 from api.ai import KeypointsInput
 from .service import UserService
@@ -35,7 +35,7 @@ ACTIONS = np.array(['hello', 'thanks', 'iloveyou'])
 
 @router.post("/predict")
 def predict(input_data: KeypointsInput):
-    if model is None:
+    if api.model is None:
         raise HTTPException(status_code=500, detail="El modelo no esta cargado")
     
     data = np.array(input_data.sequence)
@@ -48,7 +48,7 @@ def predict(input_data: KeypointsInput):
 
     input_tensor = np.expand_dims(data, axis=0)
 
-    predictions = model.predict(input_tensor, verbose=0)[0]
+    predictions = api.model.predict(input_tensor, verbose=0)[0]
 
     predicted_index = int(np.argmax(predictions))
 
