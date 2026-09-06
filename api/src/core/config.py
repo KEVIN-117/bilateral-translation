@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "RNN AI API"
     api_version: str = "1.0.0"
+    model_path: str
 
     database_url: str
     jwt_secret_key: str
