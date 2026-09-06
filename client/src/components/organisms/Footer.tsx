@@ -5,7 +5,10 @@ import { MAIN_NAV } from "@/lib/navigation";
 
 export function Footer() {
   return (
-    <footer className="relative z-10 mt-16 border-white/10 border-t bg-[#040406]/80 sm:mt-24">
+    <footer
+      className="relative z-10 mt-16 border-white/10 border-t bg-[#040406]/80 sm:mt-24"
+      id="contacto"
+    >
       <Container className="py-10 sm:py-12">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
           <div>

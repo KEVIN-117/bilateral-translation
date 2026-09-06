@@ -1,9 +1,14 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { glassButtonVariants } from "@/components/atoms/GlassButton";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Sheet,
   SheetContent,
@@ -19,8 +24,18 @@ interface MobileNavProps {
   pathname: string;
 }
 
+const itemClass = (isActive: boolean) =>
+  cn(
+    "rounded-xl px-4 py-3 font-medium transition-colors",
+    isActive
+      ? "bg-white/10 text-white"
+      : "text-gray-300 hover:bg-white/5 hover:text-white",
+  );
+
 export function MobileNav({ pathname }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const close = () => setIsOpen(false);
 
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
@@ -32,7 +47,7 @@ export function MobileNav({ pathname }: MobileNavProps) {
       </SheetTrigger>
 
       <SheetContent
-        className="w-[85%] max-w-xs border-white/10 bg-[#0a0a0f]/95 backdrop-blur-2xl"
+        className="w-[85%] max-w-xs overflow-y-auto border-white/10 bg-[#0a0a0f]/95 backdrop-blur-2xl"
         side="right"
       >
         <SheetHeader className="border-white/10 border-b">
@@ -40,28 +55,68 @@ export function MobileNav({ pathname }: MobileNavProps) {
           <SheetDescription>Traducción bilateral de señas</SheetDescription>
         </SheetHeader>
 
-        <nav className="flex flex-col gap-1 px-4">
+        <nav aria-label="Principal" className="flex flex-col gap-1 px-4">
           {MAIN_NAV.map((link) => {
-            const isActive = pathname === link.href;
+            if (!link.children) {
+              const isActive = pathname === link.href;
+
+              return (
+                <Link
+                  aria-current={isActive ? "page" : undefined}
+                  className={itemClass(isActive)}
+                  href={link.href}
+                  key={link.href}
+                  onClick={close}
+                >
+                  {link.label}
+                </Link>
+              );
+            }
+
+            const isSectionActive = pathname.startsWith(link.href);
 
             return (
-              <Link
-                aria-current={isActive ? "page" : undefined}
-                className={cn(
-                  "flex flex-col gap-0.5 rounded-xl px-4 py-3 transition-colors",
-                  isActive
-                    ? "bg-white/10 text-white"
-                    : "text-gray-300 hover:bg-white/5 hover:text-white",
-                )}
-                href={link.href}
-                key={link.href}
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="font-medium">{link.label}</span>
-                <span className="text-gray-500 text-xs">
-                  {link.description}
-                </span>
-              </Link>
+              <Collapsible defaultOpen={isSectionActive} key={link.href}>
+                <CollapsibleTrigger
+                  className={cn(
+                    itemClass(isSectionActive),
+                    "group flex w-full items-center justify-between",
+                  )}
+                >
+                  {link.label}
+                  <ChevronDown className="h-4 w-4 transition-transform group-data-[panel-open]:rotate-180" />
+                </CollapsibleTrigger>
+
+                <CollapsibleContent className="flex flex-col gap-1 py-1 pl-3">
+                  {link.children.map((mode) => (
+                    <Link
+                      aria-current={pathname === mode.href ? "page" : undefined}
+                      className={cn(
+                        "flex items-start gap-3 rounded-xl px-4 py-3 transition-colors",
+                        pathname === mode.href
+                          ? "bg-white/10 text-white"
+                          : "text-gray-300 hover:bg-white/5 hover:text-white",
+                      )}
+                      href={mode.href}
+                      key={mode.href}
+                      onClick={close}
+                    >
+                      <mode.icon
+                        className="mt-0.5 h-4 w-4 shrink-0"
+                        style={{ color: mode.accent }}
+                      />
+                      <span className="flex flex-col gap-0.5">
+                        <span className="font-medium text-sm">
+                          {mode.label}
+                        </span>
+                        <span className="text-gray-500 text-xs leading-snug">
+                          {mode.description}
+                        </span>
+                      </span>
+                    </Link>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
             );
           })}
         </nav>
@@ -70,16 +125,16 @@ export function MobileNav({ pathname }: MobileNavProps) {
           <Link
             className={glassButtonVariants({ variant: "ghost" })}
             href="/login"
-            onClick={() => setIsOpen(false)}
+            onClick={close}
           >
             Ingresar
           </Link>
           <Link
             className={glassButtonVariants({ variant: "primary" })}
             href="/register"
-            onClick={() => setIsOpen(false)}
+            onClick={close}
           >
-            Únete a SOCITEC
+            Registrarse
           </Link>
         </div>
       </SheetContent>
