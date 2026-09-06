@@ -17,7 +17,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { MAIN_NAV } from "@/lib/navigation";
+import { MAIN_NAV, type NavLink } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 interface MobileNavProps {
@@ -31,6 +31,62 @@ const itemClass = (isActive: boolean) =>
       ? "bg-white/10 text-white"
       : "text-gray-300 hover:bg-white/5 hover:text-white",
   );
+
+interface MobileNavGroupProps {
+  link: NavLink;
+  pathname: string;
+  onNavigate: () => void;
+}
+
+/**
+  Grupo desplegable del menu
+ */
+function MobileNavGroup({ link, pathname, onNavigate }: MobileNavGroupProps) {
+  const isSectionActive = pathname.startsWith(link.href);
+  const [isExpanded, setIsExpanded] = useState(isSectionActive);
+
+  return (
+    <Collapsible onOpenChange={setIsExpanded} open={isExpanded}>
+      <CollapsibleTrigger
+        className={cn(
+          itemClass(isSectionActive),
+          "group flex w-full items-center justify-between",
+        )}
+      >
+        {link.label}
+        <ChevronDown className="h-4 w-4 transition-transform group-data-[panel-open]:rotate-180" />
+      </CollapsibleTrigger>
+
+      <CollapsibleContent className="flex flex-col gap-1 py-1 pl-3">
+        {link.children?.map((mode) => (
+          <Link
+            aria-current={pathname === mode.href ? "page" : undefined}
+            className={cn(
+              "flex items-start gap-3 rounded-xl px-4 py-3 transition-colors",
+              pathname === mode.href
+                ? "bg-white/10 text-white"
+                : "text-gray-300 hover:bg-white/5 hover:text-white",
+            )}
+            href={mode.href}
+            key={mode.href}
+            onClick={onNavigate}
+          >
+            <mode.icon
+              className="mt-0.5 h-4 w-4 shrink-0"
+              style={{ color: mode.accent }}
+            />
+            <span className="flex flex-col gap-0.5">
+              <span className="font-medium text-sm">{mode.label}</span>
+              <span className="text-gray-500 text-xs leading-snug">
+                {mode.description}
+              </span>
+            </span>
+          </Link>
+        ))}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
 
 export function MobileNav({ pathname }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,50 +129,13 @@ export function MobileNav({ pathname }: MobileNavProps) {
               );
             }
 
-            const isSectionActive = pathname.startsWith(link.href);
-
             return (
-              <Collapsible defaultOpen={isSectionActive} key={link.href}>
-                <CollapsibleTrigger
-                  className={cn(
-                    itemClass(isSectionActive),
-                    "group flex w-full items-center justify-between",
-                  )}
-                >
-                  {link.label}
-                  <ChevronDown className="h-4 w-4 transition-transform group-data-[panel-open]:rotate-180" />
-                </CollapsibleTrigger>
-
-                <CollapsibleContent className="flex flex-col gap-1 py-1 pl-3">
-                  {link.children.map((mode) => (
-                    <Link
-                      aria-current={pathname === mode.href ? "page" : undefined}
-                      className={cn(
-                        "flex items-start gap-3 rounded-xl px-4 py-3 transition-colors",
-                        pathname === mode.href
-                          ? "bg-white/10 text-white"
-                          : "text-gray-300 hover:bg-white/5 hover:text-white",
-                      )}
-                      href={mode.href}
-                      key={mode.href}
-                      onClick={close}
-                    >
-                      <mode.icon
-                        className="mt-0.5 h-4 w-4 shrink-0"
-                        style={{ color: mode.accent }}
-                      />
-                      <span className="flex flex-col gap-0.5">
-                        <span className="font-medium text-sm">
-                          {mode.label}
-                        </span>
-                        <span className="text-gray-500 text-xs leading-snug">
-                          {mode.description}
-                        </span>
-                      </span>
-                    </Link>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
+              <MobileNavGroup
+                key={`${link.href}-${pathname}`}
+                link={link}
+                onNavigate={close}
+                pathname={pathname}
+              />
             );
           })}
         </nav>

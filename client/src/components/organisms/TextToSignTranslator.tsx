@@ -14,10 +14,6 @@ import {
 import { getSignByWord, listSigns } from "@/lib/sign-dictionary";
 import type { SignLookupResult } from "@/model/sign.schema";
 
-/**
-  Flujo "Texto -> Seña" el usuario escribe una palabra y obtiene el video
-  que le enseña cómo se realiza esa seña
- */
 export function TextToSignTranslator() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<SignLookupResult>({ status: "idle" });
@@ -47,63 +43,65 @@ export function TextToSignTranslator() {
   };
 
   return (
-    <section className="flex flex-col gap-8">
-      <SignSearchInput
-        onSearch={handleSearch}
-        onValueChange={setQuery}
-        value={query}
-      />
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-10">
+      <section className="flex flex-col gap-6">
+        <SignSearchInput
+          onSearch={handleSearch}
+          onValueChange={setQuery}
+          value={query}
+        />
 
-      {result.status === "found" ? (
-        <SignVideoPlayer entry={result.entry} key={result.entry.id} />
-      ) : null}
+        {result.status === "found" ? (
+          <SignVideoPlayer entry={result.entry} key={result.entry.id} />
+        ) : null}
 
-      {result.status === "not-found" ? (
-        <Empty className="glass-card min-h-[18rem] border border-dashed border-white/10">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <SearchX className="text-gray-400" />
-            </EmptyMedia>
-            <EmptyTitle className="text-base text-white">
-              Seña no encontrada
-            </EmptyTitle>
-            <EmptyDescription>
-              Todavía no tenemos la seña para{" "}
-              <span className="font-medium text-white">
-                &quot;{result.term}&quot;
-              </span>
-              . Prueba con otra palabra del vocabulario disponible.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      ) : null}
+        {result.status === "not-found" ? (
+          <Empty className="glass-card min-h-[18rem] border border-white/10 border-dashed">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <SearchX className="text-gray-400" />
+              </EmptyMedia>
+              <EmptyTitle className="text-base text-white">
+                Seña no encontrada
+              </EmptyTitle>
+              <EmptyDescription>
+                Todavía no tenemos la seña para{" "}
+                <span className="font-medium text-white">
+                  &quot;{result.term}&quot;
+                </span>
+                . Prueba con otra palabra del vocabulario disponible.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : null}
 
-      {result.status === "idle" ? (
-        <Empty className="glass-card min-h-[18rem] border border-dashed border-white/10">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <HandMetal className="text-gray-400" />
-            </EmptyMedia>
-            <EmptyTitle className="text-base text-white">
-              Busca una seña
-            </EmptyTitle>
-            <EmptyDescription>
-              Escribe una palabra y te mostramos el video que enseña cómo se
-              hace en lengua de señas.
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      ) : null}
+        {result.status === "idle" ? (
+          <Empty className="glass-card min-h-[18rem] border border-white/10 border-dashed">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HandMetal className="text-gray-400" />
+              </EmptyMedia>
+              <EmptyTitle className="text-base text-white">
+                Busca una seña
+              </EmptyTitle>
+              <EmptyDescription>
+                Escribe una palabra y te mostramos el video que enseña cómo se
+                hace en lengua de señas.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        ) : null}
+      </section>
 
-      <div className="flex flex-col gap-4">
-        <h2 className="font-heading text-sm font-medium tracking-wide text-gray-400 uppercase">
+      <aside className="glass-card flex flex-col gap-4 p-5 sm:p-6">
+        <h2 className="text-center font-heading font-medium text-gray-400 text-sm uppercase tracking-wide lg:text-left">
           Vocabulario disponible ({vocabulary.length})
         </h2>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
           {vocabulary.map((entry) => (
             <button
-              className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 backdrop-blur-md transition-all hover:border-white/20 hover:bg-white/10 hover:text-white"
+              className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-gray-300 text-sm backdrop-blur-md transition-all hover:border-white/20 hover:bg-white/10 hover:text-white"
               key={entry.id}
               onClick={() => handleVocabularyClick(entry.word)}
               type="button"
@@ -112,7 +110,7 @@ export function TextToSignTranslator() {
             </button>
           ))}
         </div>
-      </div>
-    </section>
+      </aside>
+    </div>
   );
 }
