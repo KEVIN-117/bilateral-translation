@@ -15,6 +15,7 @@
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
     "@mediapipe/holistic": "^0.5.1675471629",
+    "@mediapipe/tasks-vision": "^1.0.1",
     "@tanstack/highlight": "0.0.6",
     "@tanstack/markdown": "^0.0.12",
     "@tanstack/react-devtools": "^0.10.9",
