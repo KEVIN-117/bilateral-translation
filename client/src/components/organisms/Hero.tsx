@@ -1,10 +1,13 @@
-import { GlassButton } from "@/components/atoms/GlassButton";
-import { ArrowRight, Code, Database, Network, Cpu } from "lucide-react";
+import { ArrowRight, Code, Cpu, Database, Network } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { Container } from "@/components/atoms/Container";
+import { glassButtonVariants } from "@/components/atoms/GlassButton";
 
 const CircuitPattern = () => (
   <svg
-    className="absolute inset-0 w-full h-full opacity-10 pointer-events-none mix-blend-screen"
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 h-full w-full opacity-10 mix-blend-screen"
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
@@ -46,16 +49,18 @@ const CircuitPattern = () => (
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden">
+    <section className="relative flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden py-12 sm:py-16 md:min-h-[calc(100svh-5rem)]">
       <CircuitPattern />
 
       {/* Background Orbs */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-[#72004c] rounded-full blur-[100px] md:blur-[150px] opacity-20 mix-blend-screen animate-pulse pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-[#006f87] rounded-full blur-[100px] md:blur-[150px] opacity-20 mix-blend-screen animate-pulse pointer-events-none" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[280px] sm:w-[400px] md:w-[600px] h-[280px] sm:h-[400px] md:h-[600px] bg-[#72004c] rounded-full blur-[100px] md:blur-[150px] opacity-20 mix-blend-screen animate-pulse pointer-events-none" />
+      <div
+        className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[280px] sm:w-[400px] md:w-[600px] h-[280px] sm:h-[400px] md:h-[600px] bg-[#006f87] rounded-full blur-[100px] md:blur-[150px] opacity-20 mix-blend-screen animate-pulse pointer-events-none"
+        style={{ animationDelay: "2s" }}
+      />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-
+      <Container className="relative z-10">
+        <div className="mx-auto max-w-4xl space-y-6 text-center sm:space-y-8">
           {/* Logo Sociedad */}
           <div className="flex justify-center mb-4">
             <div className="relative group">
@@ -65,13 +70,14 @@ export function Hero() {
                 alt="Logo SOCITEC"
                 width={500}
                 height={500}
-                className="relative z-10 drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+                className="relative z-10 h-auto w-40 drop-shadow-2xl transition-transform duration-500 hover:scale-105 sm:w-56 md:w-72"
+                sizes="(max-width: 640px) 10rem, (max-width: 768px) 14rem, 18rem"
                 priority
               />
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass border-[#72004c]/30 text-sm font-medium text-white/90">
+          <div className="glass inline-flex items-center gap-2 rounded-full border-[#72004c]/30 px-4 py-2 text-center font-medium text-white/90 text-xs sm:gap-3 sm:px-5 sm:text-sm">
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#72004c] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#72004c]"></span>
@@ -79,53 +85,83 @@ export function Hero() {
             Sociedad Científica de Ingeniería de Sistemas y Tecnología
           </div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter text-white leading-[1.1]">
-            Ingeniería que <span className="text-gradient-purple block md:inline">transforma.</span>
-            <br className="hidden md:block" /> Ciencia que <span className="text-gradient-blue block md:inline">trasciende.</span>
+          <h1 className="text-balance font-extrabold text-3xl text-white leading-[1.1] tracking-tighter sm:text-5xl md:text-7xl lg:text-8xl">
+            Ingeniería que{" "}
+            <span className="text-gradient-purple block md:inline">
+              transforma.
+            </span>
+            <br className="hidden md:block" /> Ciencia que{" "}
+            <span className="text-gradient-blue block md:inline">
+              trasciende.
+            </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed font-light">
-            Un espacio de encuentro para la innovación, la investigación y la formación académica de excelencia en la Universidad Autónoma Tomás Frías.
+          <p className="mx-auto max-w-2xl font-light text-base text-gray-400 leading-relaxed sm:text-lg md:text-xl">
+            Un espacio de encuentro para la innovación, la investigación y la
+            formación académica de excelencia en la Universidad Autónoma Tomás
+            Frías.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <GlassButton variant="primary" size="lg" className="w-full sm:w-auto group">
-              Explorar Artículos
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </GlassButton>
-            <GlassButton variant="secondary" size="lg" className="w-full sm:w-auto">
-              Nuestros Proyectos
-            </GlassButton>
+          <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row sm:gap-4 sm:pt-4">
+            <Link
+              className={glassButtonVariants({
+                variant: "primary",
+                size: "lg",
+                className: "group w-full sm:w-auto",
+              })}
+              href="/traductor"
+            >
+              Traducir texto
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <Link
+              className={glassButtonVariants({
+                variant: "secondary",
+                size: "lg",
+                className: "w-full sm:w-auto",
+              })}
+              href="/camara"
+            >
+              Probar la cámara
+            </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 pt-16 max-w-3xl mx-auto">
-            <div className="glass-card p-6 flex flex-col items-center gap-3 group">
-              <div className="w-12 h-12 rounded-full bg-[#72004c]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+          <div className="mx-auto grid max-w-3xl grid-cols-2 gap-3 pt-10 sm:gap-4 sm:pt-16 md:grid-cols-4 md:gap-6">
+            <div className="glass-card group flex flex-col items-center gap-2 p-4 sm:gap-3 sm:p-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#72004c]/20 transition-transform group-hover:scale-110 sm:h-12 sm:w-12">
                 <Code className="text-[#72004c] w-6 h-6" />
               </div>
-              <span className="text-sm text-gray-300 font-medium">Software</span>
+              <span className="font-medium text-gray-300 text-xs sm:text-sm">
+                Software
+              </span>
             </div>
-            <div className="glass-card p-6 flex flex-col items-center gap-3 group">
-              <div className="w-12 h-12 rounded-full bg-[#006f87]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="glass-card group flex flex-col items-center gap-2 p-4 sm:gap-3 sm:p-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#006f87]/20 transition-transform group-hover:scale-110 sm:h-12 sm:w-12">
                 <Database className="text-[#006f87] w-6 h-6" />
               </div>
-              <span className="text-sm text-gray-300 font-medium">Datos</span>
+              <span className="font-medium text-gray-300 text-xs sm:text-sm">
+                Datos
+              </span>
             </div>
-            <div className="glass-card p-6 flex flex-col items-center gap-3 group">
-              <div className="w-12 h-12 rounded-full bg-[#72004c]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="glass-card group flex flex-col items-center gap-2 p-4 sm:gap-3 sm:p-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#72004c]/20 transition-transform group-hover:scale-110 sm:h-12 sm:w-12">
                 <Network className="text-[#72004c] w-6 h-6" />
               </div>
-              <span className="text-sm text-gray-300 font-medium">Redes</span>
+              <span className="font-medium text-gray-300 text-xs sm:text-sm">
+                Redes
+              </span>
             </div>
-            <div className="glass-card p-6 flex flex-col items-center gap-3 group">
-              <div className="w-12 h-12 rounded-full bg-[#006f87]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="glass-card group flex flex-col items-center gap-2 p-4 sm:gap-3 sm:p-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#006f87]/20 transition-transform group-hover:scale-110 sm:h-12 sm:w-12">
                 <Cpu className="text-[#006f87] w-6 h-6" />
               </div>
-              <span className="text-sm text-gray-300 font-medium">Arquitectura</span>
+              <span className="font-medium text-gray-300 text-xs sm:text-sm">
+                Arquitectura
+              </span>
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

@@ -1,32 +1,29 @@
 import type { Metadata } from "next";
-import { Footer } from "@/components/organisms/Footer";
-import { TextToSignTranslator } from "@/components/organisms/TextToSignTranslator";
+import { Container } from "@/components/atoms/Container";
+import { TranslatorModeSelector } from "@/components/organisms/TranslatorModeSelector";
 
 export const metadata: Metadata = {
-  title: "Traductor de señas | SOCITEC",
+  title: "Traductor | SOCITEC",
   description:
-    "Busca una palabra y aprende cómo se realiza su seña en lengua de señas.",
+    "Elige la dirección de la traducción: de seña a texto o de texto a seña.",
 };
 
 export default function TraductorPage() {
   return (
-    <>
-      <main className="flex-grow pt-32 pb-24">
-        <div className="container mx-auto max-w-4xl px-6">
-          <header className="mb-12 text-center">
-            <h1 className="mb-4 text-3xl font-bold text-white md:text-5xl">
-              Traductor <span className="text-gradient">Texto → Seña</span>
-            </h1>
-            <p className="text-lg text-gray-400">
-              Escribe la palabra que quieras aprender y reproduce el video de su
-              seña.
-            </p>
-          </header>
+    <Container className="py-10 sm:py-14 lg:py-20">
+      <header className="mb-8 space-y-3 sm:mb-12">
+        <p className="font-medium text-[#7fd6e8] text-sm">
+          Bilateral Translation · MVP
+        </p>
+        <h1 className="font-bold text-3xl text-white sm:text-4xl lg:text-5xl">
+          <span className="text-gradient">Traductor</span> de señas
+        </h1>
+        <p className="max-w-2xl text-gray-400 sm:text-lg">
+          Elige en qué dirección quieres traducir.
+        </p>
+      </header>
 
-          <TextToSignTranslator />
-        </div>
-      </main>
-      <Footer />
-    </>
+      <TranslatorModeSelector className="max-w-5xl" />
+    </Container>
   );
 }

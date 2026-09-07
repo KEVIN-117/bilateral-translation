@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toast";
@@ -15,7 +15,15 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "SOCITEC | Sociedad Científica de Ingeniería de Sistemas",
-  description: "Ingeniería que transforma. Ciencia que trasciende. Sociedad Científica de Ingeniería de Sistemas y Tecnología de la Universidad Autónoma Tomás Frías.",
+  description:
+    "Ingeniería que transforma. Ciencia que trasciende. Sociedad Científica de Ingeniería de Sistemas y Tecnología de la Universidad Autónoma Tomás Frías.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#060609",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
