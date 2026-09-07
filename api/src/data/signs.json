@@ -1,0 +1,84 @@
+{
+  "signs": [
+    {
+      "id": "hola",
+      "word": "Hola",
+      "aliases": ["saludo", "saludar", "buenas"],
+      "video": "hola.mp4",
+      "description": "Mano abierta a la altura de la sien, palma al frente, con un movimiento breve hacia afuera.",
+      "modelAction": "hello"
+    },
+    {
+      "id": "gracias",
+      "word": "Gracias",
+      "aliases": ["agradecer", "agradecimiento", "muchas gracias"],
+      "video": "gracias.mp4",
+      "description": "Dedos juntos tocando el mentón y la mano desciende hacia adelante abriéndose.",
+      "modelAction": "thanks"
+    },
+    {
+      "id": "te-amo",
+      "word": "Te amo",
+      "aliases": ["te quiero", "amor", "amar"],
+      "video": "te-amo.mp4",
+      "description": "Mano al frente con pulgar, índice y meñique extendidos, palma hacia el interlocutor.",
+      "modelAction": "iloveyou"
+    },
+    {
+      "id": "por-favor",
+      "word": "Por favor",
+      "aliases": ["porfavor", "favor"],
+      "video": "por-favor.mp4",
+      "description": "Palma abierta sobre el pecho describiendo un movimiento circular.",
+      "modelAction": null
+    },
+    {
+      "id": "si",
+      "word": "Sí",
+      "aliases": ["afirmativo", "claro", "correcto"],
+      "video": "si.mp4",
+      "description": "Puño cerrado que sube y baja desde la muñeca, imitando el asentir de la cabeza.",
+      "modelAction": null
+    },
+    {
+      "id": "no",
+      "word": "No",
+      "aliases": ["negativo", "nunca"],
+      "video": "no.mp4",
+      "description": "Índice y medio extendidos que se cierran sobre el pulgar en un solo movimiento.",
+      "modelAction": null
+    },
+    {
+      "id": "buenos-dias",
+      "word": "Buenos días",
+      "aliases": ["buen dia", "buenos dias", "buenos días"],
+      "video": "buenos-dias.mp4",
+      "description": "Seña de saludo seguida del antebrazo que se eleva desde el codo, como un amanecer.",
+      "modelAction": null
+    },
+    {
+      "id": "adios",
+      "word": "Adiós",
+      "aliases": ["chao", "chau", "hasta luego", "despedida"],
+      "video": "adios.mp4",
+      "description": "Mano abierta a la altura del hombro con los dedos moviéndose hacia arriba y abajo.",
+      "modelAction": null
+    },
+    {
+      "id": "perdon",
+      "word": "Perdón",
+      "aliases": ["disculpa", "disculpe", "lo siento", "perdona"],
+      "video": "perdon.mp4",
+      "description": "Puño cerrado que gira sobre el pecho en movimiento circular.",
+      "modelAction": null
+    },
+    {
+      "id": "ayuda",
+      "word": "Ayuda",
+      "aliases": ["ayudar", "auxilio", "socorro"],
+      "video": "ayuda.mp4",
+      "description": "Puño con pulgar arriba apoyado sobre la palma contraria; ambas manos suben juntas.",
+      "modelAction": null
+    }
+  ]
+}

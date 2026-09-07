@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     # Optional local override
     model_path: str | None = None
 
+    # Dictionary config: prefijo con el que se sirven los videos de las señas
+    signs_video_base_url: str = "/videos"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore",

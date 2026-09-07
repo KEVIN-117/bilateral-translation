@@ -4,11 +4,14 @@ from contextlib import asynccontextmanager
 from src.config import settings
 from src.ml import inference_model
 from src.router import router
+from src.signs import load_catalog, signs_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Cargar el modelo al iniciar
     inference_model.load()
+    # Validar el catálogo al arrancar y no en la primera petición
+    load_catalog()
     yield
     # Limpiar recursos si es necesario al apagar
     inference_model.model = None
@@ -27,3 +30,4 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(signs_router)
