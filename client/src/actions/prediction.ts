@@ -69,12 +69,17 @@ function toPredictionError(error: unknown): PredictionError {
     }
 
     const { status, data } = error.response;
-    const detail =
-      typeof data?.detail === "string"
-        ? data.detail
-        : "El servidor rechazó la petición";
+    const detail = data?.detail;
 
-    return new PredictionError("server", detail, status);
+    // HTTPException manda un string; los 422 de Pydantic mandan un array de objetos
+    let message = "El servidor rechazó la petición";
+    if (typeof detail === "string") {
+      message = detail;
+    } else if (Array.isArray(detail)) {
+      message = "El servidor rechazó el formato de los datos enviados";
+    }
+
+    return new PredictionError("server", message, status);
   }
 
   return new PredictionError(

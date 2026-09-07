@@ -1,56 +1,99 @@
+"use client";
+
+import { AlertTriangle, HandMetal, Loader2, WifiOff } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import type { PredictionStatus } from "@/hooks/use-sign-prediction";
+import { getSignByModelAction } from "@/lib/sign-dictionary";
+import type {
+  PredictionError,
+  PredictionResponse,
+} from "@/model/prediction.schema";
+
 interface PredictionDisplayProps {
-    prediction: string;
-    loading: boolean;
-    confidence: number | null;
+  status: PredictionStatus;
+  result: PredictionResponse | null;
+  error: PredictionError | null;
 }
+
+/** Un fallo de red merece otro ícono que un rechazo del servidor */
+function errorIcon(error: PredictionError) {
+  if (error.kind === "network" || error.kind === "timeout") {
+    return <WifiOff className="h-6 w-6 text-red-400" />;
+  }
+
+  return <AlertTriangle className="h-6 w-6 text-amber-400" />;
+}
+
 export function PredictionDisplay({
-    prediction,
-    loading,
-    confidence
+  status,
+  result,
+  error,
 }: PredictionDisplayProps) {
-    const getEmoji = (pred: string) => {
-        switch (pred) {
-            case 'Dog': return '🐕';
-            case 'Cat': return '🐱';
-            default: return '';
-        }
-    };
+  if (status === "loading") {
+    return (
+      <output
+        aria-live="polite"
+        className="flex min-h-32 flex-col items-center justify-center gap-3 rounded-xl border border-white/10 bg-black/20 p-6 text-center"
+      >
+        <Loader2 className="h-6 w-6 animate-spin text-[#006f87]" />
+        <p className="font-medium text-sm text-white">Analizando la seña…</p>
+        <p className="text-gray-500 text-xs">Enviando 30 frames al modelo</p>
+      </output>
+    );
+  }
 
-    const getColor = (pred: string) => {
-        switch (pred) {
-            case 'Dog': return 'from-purple-400 via-pink-500 to-red-500';
-            case 'Cat': return 'from-purple-400 via-pink-500 to-blue-500';
-            default: return 'from-purple-400 via-pink-500 to-gray-500';
-        }
-    };
+  if (status === "error" && error) {
+    return (
+      <output
+        aria-live="assertive"
+        className="flex min-h-32 flex-col items-center justify-center gap-3 rounded-xl border border-red-500/30 bg-red-500/5 p-6 text-center"
+      >
+        {errorIcon(error)}
+        <p className="font-medium text-sm text-white">{error.message}</p>
+        {error.status ? (
+          <p className="text-gray-500 text-xs">HTTP {error.status}</p>
+        ) : null}
+      </output>
+    );
+  }
 
-    console.log(prediction);
-
-    if (loading) {
-        return (
-            <div className="text-center mt-4">
-                <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Processing...</span>
-                </div>
-            </div>
-        );
-    }
+  if (status === "success" && result) {
+    // El modelo responde "hello"; el usuario tiene que leer "Hola"
+    const sign = getSignByModelAction(result.prediction);
+    const confidence = Math.round(result.confidence * 1000) / 10;
 
     return (
-        <div className="flex flex-col space-y-4 p-4 items-center">
-            <div className={`text-6xl md:text-7xl lg:text-8xl font-bold  animate-pulse`}>
-                {getEmoji(prediction)} <span className={`bg-linear-to-r ${getColor(prediction)} bg-clip-text text-transparent`}>{prediction}</span>
-            </div>
-            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-500/20 text-green-300 border border-green-500/50">
-                <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                Detected
-            </div>
-            {confidence && (
-                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-500/20 text-purple-300 border border-purple-500/50">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full mr-2 animate-pulse"></div>
-                    Confidence: {(confidence * 100).toFixed(1)}%
-                </div>
-            )}
-        </div>
+      <output
+        aria-live="polite"
+        className="flex min-h-32 flex-col items-center justify-center gap-3 rounded-xl border border-white/10 bg-black/20 p-6 text-center"
+      >
+        <p className="font-bold text-3xl text-white sm:text-4xl">
+          {sign?.word ?? result.prediction}
+        </p>
+
+        <Badge
+          className="border-[#006f87]/40 bg-[#006f87]/20 text-[#7fd6e8]"
+          variant="outline"
+        >
+          {confidence}% de confianza
+        </Badge>
+
+        {sign ? null : (
+          <p className="text-gray-500 text-xs">
+            El modelo devolvió &quot;{result.prediction}&quot;, que no está en
+            el diccionario
+          </p>
+        )}
+      </output>
     );
+  }
+
+  return (
+    <div className="flex min-h-32 flex-col items-center justify-center gap-3 rounded-xl border border-white/10 border-dashed bg-black/20 p-6 text-center">
+      <HandMetal className="h-6 w-6 text-gray-500" />
+      <p className="text-gray-400 text-sm">
+        Haz una seña frente a la cámara y pulsa Traducir.
+      </p>
+    </div>
+  );
 }

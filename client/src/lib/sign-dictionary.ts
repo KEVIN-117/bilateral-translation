@@ -93,7 +93,6 @@ export const SIGN_DICTIONARY: SignEntry[] = [
   },
 ];
 
-
 const signIndex = new Map<string, SignEntry>();
 
 for (const entry of SIGN_DICTIONARY) {
@@ -133,6 +132,14 @@ export function searchSigns(term: string, limit = 6): SignEntry[] {
   }
 
   return [...startsWith, ...contains].slice(0, limit);
+}
+
+/**
+  Traduce la etiqueta que devuelve el modelo LSTM ("hello") a la entrada del
+  diccionario ("Hola"). Es el puente entre la respuesta de la API y la UI
+ */
+export function getSignByModelAction(action: string): SignEntry | null {
+  return SIGN_DICTIONARY.find((entry) => entry.modelAction === action) ?? null;
 }
 
 export function listSigns(): SignEntry[] {
