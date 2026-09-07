@@ -2,17 +2,21 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { PredictionDisplay } from "@/components/organisms/PredictionDisplay";
 import { toast } from "@/hooks/use-toast";
+import { useSignPrediction } from "@/hooks/use-sign-prediction";
 import { extractKeypoints } from "@/lib/keypointExtractor";
+import { SEQUENCE_LENGTH } from "@/model/prediction.schema";
 
 const CANVAS_WIDTH = 640;
 const CANVAS_HEIGHT = 480;
-const SEQUENCE_LENGTH = 30;
 
 export default function StreamVideo() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isCameraActive, setIsCameraActive] = useState(false);
+
+    const prediction = useSignPrediction();
 
     const sequenceRef = useRef<number[][]>([]);
     const holisticRef = useRef<any>(null);
@@ -150,9 +154,15 @@ export default function StreamVideo() {
         });
     };
 
+    const translateSign = () => {
+        // Copia: el buffer sigue rotando mientras la peticion viaja
+        prediction.predict([...sequenceRef.current]);
+    };
+
     const stopCamera = () => {
         setIsCameraActive(false);
         sequenceRef.current = []; // Reiniciar buffer
+        prediction.reset();
 
         // Limpiar canvas visualmente
         const canvas = canvasRef.current;
@@ -179,9 +189,18 @@ export default function StreamVideo() {
                             Activar Cámara
                         </Button>
                     ) : (
-                        <Button onClick={stopCamera} className='inline-flex items-center px-6 py-2 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-red-500/25 border border-red-500/50'>
-                            Detener Cámara
-                        </Button>
+                        <>
+                            <Button onClick={stopCamera} className='inline-flex items-center px-6 py-2 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-red-500/25 border border-red-500/50'>
+                                Detener Cámara
+                            </Button>
+                            <Button
+                                onClick={translateSign}
+                                disabled={prediction.status === "loading"}
+                                className='inline-flex items-center px-6 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-cyan-500/25 border border-cyan-500/50 disabled:opacity-50'
+                            >
+                                {prediction.status === "loading" ? "Traduciendo…" : "Traducir seña"}
+                            </Button>
+                        </>
                     )}
                 </div>
 
@@ -219,6 +238,12 @@ export default function StreamVideo() {
                         </div>
                     </div>
                 </section>
+
+                <PredictionDisplay
+                    status={prediction.status}
+                    result={prediction.result}
+                    error={prediction.error}
+                />
 
                 <div className="flex justify-center space-x-4 text-sm text-cyan-300/80">
                     <div className="flex items-center">
