@@ -1,8 +1,8 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-const glassButtonVariants = cva(
+const glassButtonStyles = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
@@ -26,25 +26,35 @@ const glassButtonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
-)
+  },
+);
+
+/**
+ * cva concatena sin resolver conflictos: pasarle "hidden" dejaba tambien el
+ * "inline-flex" de la base en el atributo class, y ganaba el que estuviera
+ * despues en el CSS. cn() aplica tailwind-merge y deja solo el ultimo
+ */
+export function glassButtonVariants(
+  props?: Parameters<typeof glassButtonStyles>[0],
+) {
+  return cn(glassButtonStyles(props));
+}
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof glassButtonVariants> {
-}
+    VariantProps<typeof glassButtonStyles> {}
 
 const GlassButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => {
     return (
       <button
-        className={cn(glassButtonVariants({ variant, size, className }))}
+        className={glassButtonVariants({ variant, size, className })}
         ref={ref}
         {...props}
       />
-    )
-  }
-)
-GlassButton.displayName = "GlassButton"
+    );
+  },
+);
+GlassButton.displayName = "GlassButton";
 
-export { GlassButton, glassButtonVariants }
+export { GlassButton };
