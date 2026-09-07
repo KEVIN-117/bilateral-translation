@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { extractKeypoints } from "@/lib/keypointExtractor";
+import type { PredictionResponse } from "@/types/prediction";
+import { predictSign } from "@/services/prediction";
 
 const CANVAS_WIDTH = 640;
 const CANVAS_HEIGHT = 480;
@@ -15,8 +17,38 @@ export default function StreamVideo() {
     const [isCameraActive, setIsCameraActive] = useState(false);
 
     const sequenceRef = useRef<number[][]>([]);
+    const isPredictingRef = useRef(false);
+
     const holisticRef = useRef<any>(null);
     const cameraRef = useRef<any>(null);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [prediction, setPrediction] =
+        useState<PredictionResponse | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const requestPrediction = async (sequence: number[][]) => {
+        if (isPredictingRef.current) {
+            return;
+        }
+
+        isPredictingRef.current = true;
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const result = await predictSign(sequence);
+
+            setPrediction(result);
+        } catch (error) {
+            console.error("Error consultando a FastAPI:", error);
+
+            setError("No se pudo conectar al servidor.");
+        } finally {
+            isPredictingRef.current = false;
+            setIsLoading(false);
+        }
+    };
 
     // Inicializar Holistic una sola vez al montar el componente
     useEffect(() => {
@@ -96,6 +128,15 @@ export default function StreamVideo() {
             if (sequenceRef.current.length > SEQUENCE_LENGTH) {
                 sequenceRef.current.shift();
             }
+
+            if (
+                sequenceRef.current.length === SEQUENCE_LENGTH &&
+                !isPredictingRef.current
+            ) {
+                const currentSequence = [...sequenceRef.current];
+
+                void requestPrediction(currentSequence);
+            }
         });
 
         holisticRef.current = holistic;
@@ -153,6 +194,9 @@ export default function StreamVideo() {
     const stopCamera = () => {
         setIsCameraActive(false);
         sequenceRef.current = []; // Reiniciar buffer
+        setPrediction(null);
+        setError(null);
+        setIsLoading(false);
 
         // Limpiar canvas visualmente
         const canvas = canvasRef.current;
@@ -221,6 +265,33 @@ export default function StreamVideo() {
                 </section>
 
                 <div className="flex justify-center space-x-4 text-sm text-cyan-300/80">
+                    {isLoading && (
+                        <span className="text-yellow-300">
+                            Analizando seña...
+                        </span>
+                    )}
+
+                    {error && (
+                        <span className="text-red-400">
+                            {error}
+                        </span>
+                    )}
+
+                    {prediction && !isLoading && (
+                        <div className="text-center">
+                            <p className="text-cyan-300">
+                                Seña detectada
+                            </p>
+
+                            <p className="text-2xl font-bold text-white">
+                                {prediction.prediction}
+                            </p>
+
+                            <p className="text-sm text-cyan-300/80">
+                                Confianza: {(prediction.confidence * 100).toFixed(2)}%
+                            </p>
+                        </div>
+                    )}
                     <div className="flex items-center">
                         <div className={`w-2 h-2 rounded-full mr-2 ${isCameraActive ? 'bg-green-400 animate-pulse' : 'bg-red-500'}`}></div>
                         Cámara {isCameraActive ? 'Activa y Procesando' : 'Inactiva'}
