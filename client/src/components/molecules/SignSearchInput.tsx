@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useId, useMemo, useState } from "react";
-import { GlassButton } from "@/components/atoms/GlassButton";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { searchSigns } from "@/lib/sign-dictionary";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,7 @@ export function SignSearchInput({
   onSearch,
 }: SignSearchInputProps) {
   const listboxId = useId();
+  const inputId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [highlighted, setHighlighted] = useState(-1);
 
@@ -75,9 +76,18 @@ export function SignSearchInput({
         commit(value);
       }}
     >
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <label
+        className="mb-2 block text-sm font-medium text-white"
+        htmlFor={inputId}
+      >
+        Escribe una palabra
+      </label>
+      <div className="flex flex-col gap-2 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
+          <Search
+            aria-hidden="true"
+            className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#c3c9d1]"
+          />
           <Input
             aria-activedescendant={
               suggestions[highlighted]
@@ -88,7 +98,8 @@ export function SignSearchInput({
             aria-controls={showSuggestions ? listboxId : undefined}
             aria-expanded={showSuggestions}
             autoComplete="off"
-            className="h-12 border-white/10 bg-white/5 pl-12 text-base text-white backdrop-blur-md placeholder:text-gray-500"
+            className="min-h-12 border-white/25 bg-black/25 pl-12 text-base text-white placeholder:text-[#c3c9d1] focus-visible:ring-2 focus-visible:ring-[#a9c3ea]"
+            id={inputId}
             onBlur={() => setIsOpen(false)}
             onChange={(event) => {
               onValueChange(event.target.value);
@@ -97,33 +108,36 @@ export function SignSearchInput({
             }}
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
-            placeholder="Escribe una palabra, por ejemplo: HOLA"
+            placeholder="Por ejemplo: gracias"
             role="combobox"
             value={value}
           />
         </div>
 
-        <GlassButton className="h-12" size="lg" type="submit" variant="primary">
+        <Button
+          className="min-h-12 shrink-0 bg-[#4d6999] px-5 text-white hover:bg-[#5c79aa] focus-visible:ring-[#c3d5f1]"
+          type="submit"
+        >
           Traducir
-        </GlassButton>
+        </Button>
       </div>
 
       {showSuggestions ? (
         <div
-          className="glass-panel absolute z-20 mt-2 w-full overflow-hidden rounded-xl py-1"
+          className="translator-glass absolute z-50 mt-2 w-full overflow-hidden rounded-xl py-1"
           id={listboxId}
           role="listbox"
         >
           {suggestions.map((entry, index) => (
             <div
               className={cn(
-                "cursor-pointer px-4 py-2.5 text-sm text-gray-300 transition-colors",
-                index === highlighted && "bg-white/10 text-white",
+                "min-h-11 cursor-pointer px-4 py-2.5 text-left text-sm text-white transition-colors",
+                index === highlighted && "bg-white/15",
               )}
               id={`${listboxId}-${entry.id}`}
               key={entry.id}
               // onMouseDown corre antes que onBlur del input, así el clic sí registra.
-              onMouseDown={(event) => {
+              onPointerDown={(event) => {
                 event.preventDefault();
                 commit(entry.word);
               }}

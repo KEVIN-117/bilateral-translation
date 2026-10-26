@@ -84,8 +84,16 @@
     @apply bg-background text-foreground bg-[#060609] overflow-x-hidden;
     /* Immersive dark tech background */
     background-image:
-      radial-gradient(circle at 15% 50%, rgba(114, 0, 76, 0.12), transparent 40%),
-      radial-gradient(circle at 85% 30%, rgba(0, 111, 135, 0.12), transparent 40%);
+      radial-gradient(
+        circle at 15% 50%,
+        rgba(114, 0, 76, 0.12),
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 85% 30%,
+        rgba(0, 111, 135, 0.12),
+        transparent 40%
+      );
   }
 
   html {
@@ -129,6 +137,80 @@
   }
 }
 
+/* Workspace treatment inspired by the reference dashboard: solid dark tones
+   with translucent controls over the camera, kept scoped to the translator. */
+.translator-workspace {
+  --translator-background: #050608;
+  --translator-panel: rgba(12, 18, 27, 0.86);
+  --translator-ink: #f5f7f9;
+  --translator-muted: #c3c9d1;
+  --translator-edge: rgba(195, 201, 209, 0.2);
+
+  background: var(--translator-background);
+  color: var(--translator-ink);
+  color-scheme: dark;
+}
+
+.translator-glass {
+  border: 1px solid var(--translator-edge);
+  background-color: var(--translator-panel);
+  backdrop-filter: blur(20px) saturate(120%);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
+}
+
+/* Raise panel and control scale on large displays, including 4K televisions. */
+@media (min-width: 1920px) {
+  .translator-workspace .translator-header {
+    min-height: clamp(84px, 5vh, 112px);
+    padding-inline: clamp(2rem, 4vw, 5.5rem);
+  }
+
+  .translator-workspace .translator-panel {
+    width: clamp(25rem, 19vw, 36rem);
+    padding: clamp(1.5rem, 1.35vw, 2.5rem);
+  }
+
+  .translator-workspace .translator-panel h2 {
+    font-size: clamp(1.35rem, 1.1vw, 2rem);
+  }
+
+  .translator-workspace .translator-panel h3 {
+    font-size: clamp(0.875rem, 0.75vw, 1.25rem);
+  }
+
+  .translator-workspace .translator-panel p,
+  .translator-workspace .translator-panel li,
+  .translator-workspace .translator-panel output {
+    font-size: clamp(1rem, 0.85vw, 1.45rem);
+    line-height: 1.55;
+  }
+
+  .translator-workspace .translator-controls {
+    bottom: clamp(1.5rem, 2vw, 3rem);
+    gap: clamp(0.75rem, 1vw, 1.5rem);
+    padding: clamp(0.75rem, 0.8vw, 1.25rem);
+  }
+
+  .translator-workspace .translator-controls button {
+    min-height: clamp(3rem, 3.5vw, 4.25rem);
+    padding-inline: clamp(1.25rem, 1.5vw, 2rem);
+    font-size: clamp(1rem, 0.85vw, 1.35rem);
+  }
+}
+
+@media (forced-colors: active) {
+  .translator-workspace {
+    background: Canvas;
+  }
+
+  .translator-glass {
+    border-color: CanvasText;
+    background: Canvas;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+}
+
 /* =========================================
    ANIMACIONES GLOBALES PREMIUM
    ========================================= */
@@ -157,7 +239,6 @@
 }
 
 @keyframes loader-pulse-ring {
-
   0%,
   100% {
     transform: scale(1);
@@ -171,7 +252,6 @@
 }
 
 @keyframes loader-icon-float {
-
   0%,
   100% {
     transform: translateY(0) scale(1);
@@ -193,7 +273,6 @@
 }
 
 @keyframes loader-dot {
-
   0%,
   80%,
   100% {
