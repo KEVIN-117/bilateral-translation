@@ -1,17 +1,29 @@
-import { HolisticLandmarker } from '@mediapipe/tasks-vision';
-import { BaseWorker } from './base-worker';
+import {
+  HolisticLandmarker,
+  type HolisticLandmarkerResult,
+} from "@mediapipe/tasks-vision";
+import { BaseWorker } from "./base-worker";
+
+type WorkerMessage = {
+  type: string;
+  bitmap?: ImageBitmap;
+  timestampMs?: number;
+  [key: string]: unknown;
+};
 
 class HolisticLandmarkerWorker extends BaseWorker<HolisticLandmarker> {
-  protected async initializeTask(data: any): Promise<void> {
+  protected async initializeTask(data?: WorkerMessage): Promise<void> {
     const vision = await this.getVisionFileset();
-
     this.taskInstance = await HolisticLandmarker.createFromOptions(vision, {
       baseOptions: {
-        // Point to the official task model if not provided
-        modelAssetPath: this.currentOptions.modelAssetPath || 'https://storage.googleapis.com/mediapipe-models/holistic_landmarker/holistic_landmarker/float16/1/holistic_landmarker.task',
-        delegate: this.currentOptions.delegate || 'GPU',
+        modelAssetPath:
+          (this.currentOptions.modelAssetPath as string | undefined) ??
+          "https://storage.googleapis.com/mediapipe-models/holistic_landmarker/holistic_landmarker/float16/1/holistic_landmarker.task",
+        delegate:
+          (this.currentOptions.delegate as "GPU" | "CPU" | undefined) ?? "GPU",
       },
-      runningMode: data?.runningMode || 'VIDEO',
+      runningMode:
+        (data?.runningMode as "VIDEO" | "IMAGE" | undefined) ?? "VIDEO",
       minFaceDetectionConfidence: 0.5,
       minFacePresenceConfidence: 0.5,
       minFaceSuppressionThreshold: 0.5,
@@ -23,40 +35,47 @@ class HolisticLandmarkerWorker extends BaseWorker<HolisticLandmarker> {
     });
   }
 
-  protected async updateOptions(data: any): Promise<void> {
-    if (this.taskInstance) {
-      await this.taskInstance.setOptions({
-        runningMode: data.runningMode || this.currentOptions.runningMode || 'VIDEO',
-      });
-    }
+  protected async updateOptions(
+    options: Record<string, unknown>,
+  ): Promise<void> {
+    await this.taskInstance?.setOptions({
+      runningMode:
+        (options.runningMode as "VIDEO" | "IMAGE" | undefined) ?? "VIDEO",
+    });
   }
 
-  protected async handleCustomMessage(data: any): Promise<void> {
-    const { type, ...rest } = data;
+  protected async handleCustomMessage(data: WorkerMessage): Promise<void> {
+    if (data.type !== "DETECT_VIDEO") return;
 
-    if (type === 'DETECT_VIDEO' && this.taskInstance) {
-      try {
-        const startTimeMs = performance.now();
-        // rest.bitmap is an ImageBitmap transferred from the main thread
-        const result = this.taskInstance.detectForVideo(rest.bitmap, rest.timestampMs);
-        
-        self.postMessage({
-          type: 'DETECT_RESULT',
-          result,
-          mode: 'VIDEO',
-          inferenceTime: performance.now() - startTimeMs,
-        });
-        
-        // We must close the bitmap to free memory since we took ownership
-        if (rest.bitmap && typeof rest.bitmap.close === 'function') {
-           rest.bitmap.close();
-        }
-      } catch (e) {
-        console.warn('Video detection error', e);
+    const bitmap = data.bitmap;
+    try {
+      if (
+        !this.taskInstance ||
+        !bitmap ||
+        typeof data.timestampMs !== "number"
+      ) {
+        throw new Error(
+          "El detector aún no está listo para analizar fotogramas.",
+        );
       }
-    } else if (type === 'CLEANUP') {
-      this.taskInstance?.close();
-      this.taskInstance = undefined;
+
+      const startedAt = performance.now();
+      const result: HolisticLandmarkerResult = this.taskInstance.detectForVideo(
+        bitmap,
+        data.timestampMs,
+      );
+      self.postMessage({
+        type: "DETECT_RESULT",
+        result,
+        inferenceTime: performance.now() - startedAt,
+      });
+    } catch (error) {
+      self.postMessage({
+        type: "DETECT_ERROR",
+        error: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      bitmap?.close();
     }
   }
 }

@@ -1,95 +1,79 @@
-import { FilesetResolver } from '@mediapipe/tasks-vision';
+import { FilesetResolver } from "@mediapipe/tasks-vision";
+
+type WorkerMessage = {
+  type: string;
+  [key: string]: unknown;
+};
 
 export abstract class BaseWorker<T> {
   protected taskInstance: T | undefined;
-  protected isInitializing = false;
-  protected currentOptions: any = {};
-  protected basePath = '/';
-  protected isProcessing = false;
+  protected currentOptions: Record<string, unknown> = {};
+  protected basePath =
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm";
 
   constructor() {
-    self.onmessage = this.handleMessage.bind(this);
+    self.onmessage = (event: MessageEvent<WorkerMessage>) => {
+      void this.handleMessage(event);
+    };
   }
 
-  protected async handleMessage(event: MessageEvent) {
+  protected async handleMessage(event: MessageEvent<WorkerMessage>) {
     const { type } = event.data;
 
-    while (this.isProcessing) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
-    this.isProcessing = true;
-
     try {
-      if (type === 'INIT') {
-        const { modelAssetPath, delegate, baseUrl, ...rest } = event.data;
-        this.basePath = baseUrl || 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm';
-        this.currentOptions = { modelAssetPath, delegate, ...rest };
-
+      if (type === "INIT") {
+        const { modelAssetPath, delegate, baseUrl, ...options } = event.data;
+        this.basePath = typeof baseUrl === "string" ? baseUrl : this.basePath;
+        this.currentOptions = { modelAssetPath, delegate, ...options };
         await this.initializeBase(event.data);
-        self.postMessage({ type: 'INIT_DONE' });
-      } else if (type === 'SET_OPTIONS') {
-        const { type: _type, ...optionsToUpdate } = event.data;
-        Object.assign(this.currentOptions, optionsToUpdate);
-        await this.updateOptions(optionsToUpdate);
-        self.postMessage({ type: 'OPTIONS_UPDATED' });
-      } else if (type === 'CLEANUP') {
-        if (this.taskInstance) {
-          (this.taskInstance as any).close?.();
-          this.taskInstance = undefined;
-        }
-        self.postMessage({ type: 'CLEANUP_DONE' });
+        self.postMessage({ type: "INIT_DONE" });
+      } else if (type === "SET_OPTIONS") {
+        const { type: _type, ...options } = event.data;
+        Object.assign(this.currentOptions, options);
+        await this.updateOptions(options);
+        self.postMessage({ type: "OPTIONS_UPDATED" });
+      } else if (type === "CLEANUP") {
+        this.closeTask();
+        self.postMessage({ type: "CLEANUP_DONE" });
       } else {
         await this.handleCustomMessage(event.data);
       }
-    } catch (error: any) {
-      console.error('Worker Error:', error);
-      self.postMessage({ type: 'ERROR', error: error?.message || String(error) });
-    } finally {
-      this.isProcessing = false;
+    } catch (error) {
+      self.postMessage({
+        type: "ERROR",
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 
-  private async initializeBase(data: any) {
-    if (this.isInitializing) return;
-    this.isInitializing = true;
+  private async initializeBase(data: WorkerMessage) {
+    this.closeTask();
 
     try {
-      if (this.taskInstance) {
-        (this.taskInstance as any).close?.();
-        this.taskInstance = undefined;
-      }
       await this.initializeTask(data);
-    } catch (error: any) {
-      if (this.currentOptions.delegate === 'GPU') {
-        console.warn('Worker GPU delegate initialization failed, falling back to CPU:', error);
-        this.currentOptions.delegate = 'CPU';
-        self.postMessage({ type: 'DELEGATE_FALLBACK' });
-        if (this.taskInstance) {
-          try {
-            (this.taskInstance as any).close?.();
-          } catch (_) {}
-          this.taskInstance = undefined;
-        }
-        await this.initializeTask(data);
-      } else {
-        throw error;
-      }
-    } finally {
-      this.isInitializing = false;
+    } catch (error) {
+      if (this.currentOptions.delegate !== "GPU") throw error;
+
+      this.currentOptions.delegate = "CPU";
+      self.postMessage({ type: "DELEGATE_FALLBACK" });
+      this.closeTask();
+      await this.initializeTask(data);
     }
+  }
+
+  private closeTask() {
+    (this.taskInstance as { close?: () => void } | undefined)?.close?.();
+    this.taskInstance = undefined;
   }
 
   protected async getVisionFileset() {
-    // Usamos el CDN para evitar problemas de bundler con los archivos wasm
-    const wasmPath = this.basePath;
-    const fileset = await FilesetResolver.forVisionTasks(wasmPath);
-    return fileset;
+    return FilesetResolver.forVisionTasks(this.basePath);
   }
 
-  protected updateOptions(_?: any): Promise<void> {
+  protected updateOptions(_options?: Record<string, unknown>): Promise<void> {
     return Promise.resolve();
   }
 
-  protected abstract initializeTask(data?: any): Promise<void>;
-  protected abstract handleCustomMessage(data: any): Promise<void>;
+  protected abstract initializeTask(data?: WorkerMessage): Promise<void>;
+  protected abstract handleCustomMessage(data: WorkerMessage): Promise<void>;
 }
