@@ -5,21 +5,19 @@ import { SignToTextPanel } from "@/components/organisms/SignToTextPanel";
 export const metadata: Metadata = {
   title: "Seña → Texto | SOCITEC",
   description:
-    "Reconocimiento de lengua de señas por cámara y traducción a texto.",
+    "Usa la cámara para reconocer Hola, Gracias o Te amo en lengua de señas.",
 };
 
 export default function SenaATextoPage() {
   return (
-    <Container className="py-10 sm:py-14 lg:py-20">
-      <header className="mb-8 space-y-3 text-center sm:mb-12 lg:text-left">
-        <p className="font-medium text-[#7fd6e8] text-sm">
-          Bilateral Translation · MVP
-        </p>
-        <h1 className="font-bold text-3xl text-white sm:text-4xl lg:text-5xl">
-          Seña → <span className="text-gradient">Texto</span>
+    <Container className="py-8 sm:py-12 lg:py-16">
+      <header className="mb-8 max-w-3xl space-y-3 sm:mb-10">
+        <h1 className="font-bold text-3xl text-foreground sm:text-4xl lg:text-5xl">
+          Seña → Texto
         </h1>
-        <p className="mx-auto max-w-2xl text-gray-400 sm:text-lg lg:mx-0">
-          Muestra una seña a la cámara y el modelo la traduce a texto.
+        <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+          Muestra a la cámara una de las señas que reconoce el modelo: Hola,
+          Gracias o Te amo.
         </p>
       </header>
 

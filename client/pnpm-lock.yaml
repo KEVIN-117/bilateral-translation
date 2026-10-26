@@ -23,6 +23,9 @@ importers:
       '@mediapipe/holistic':
         specifier: ^0.5.1675471629
         version: 0.5.1675471629
+      '@mediapipe/tasks-vision':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@tanstack/highlight':
         specifier: 0.0.6
         version: 0.0.6
@@ -638,6 +641,9 @@ packages:
 
   '@mediapipe/holistic@0.5.1675471629':
     resolution: {integrity: sha512-qY+cxtDeSOvVtevrLgnodiwXYaAtPi7dHZtNv/bUCGEjFicAOYtMmrZSqMmbPkTB2+4jLnPF1vgshkAqQRSYAw==}
+
+  '@mediapipe/tasks-vision@1.0.1':
+    resolution: {integrity: sha512-rvRE2FmAZ6ZxKSw7wq+e+jQDpN3t1B/tD2mJz9SmAzb1msoDkd4dMoE4wAh8Z30Um0PQwLiHr9QtomhmXk3aUQ==}
 
   '@modelcontextprotocol/sdk@1.30.0':
     resolution: {integrity: sha512-xKd8OIzlqNzcqcNumGAa6g+PW2kjD5vrpcKOnfldAUPP3j7lnqMPwlTXQm8gF+UwH72z0lqaRbjr9hqGz0eITA==}
@@ -3490,6 +3496,8 @@ snapshots:
   '@mediapipe/drawing_utils@0.3.1675466124': {}
 
   '@mediapipe/holistic@0.5.1675471629': {}
+
+  '@mediapipe/tasks-vision@1.0.1': {}
 
   '@modelcontextprotocol/sdk@1.30.0(supports-color@7.2.0)(zod@3.25.76)':
     dependencies:
