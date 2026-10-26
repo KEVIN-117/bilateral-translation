@@ -4,12 +4,14 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 RUN npm install -g pnpm@11.15.1
 RUN pnpm config set strict-dep-builds false
-COPY package.json ./
-RUN pnpm install
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 FROM node:22-alpine AS builder
 WORKDIR /app
 RUN npm install -g pnpm@11.15.1
+ARG ML_API_INTERNAL_URL=http://api:8000/api/v1
+ENV ML_API_INTERNAL_URL=$ML_API_INTERNAL_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1

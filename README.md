@@ -36,6 +36,24 @@ npm run dev
 ```
 La aplicación web estará disponible en `http://localhost:3000`.
 
+## 🐳 Despliegue con Docker
+
+Las imágenes se construyen para `linux/amd64` y se publican en Docker Hub al hacer push a `main` o crear una etiqueta `v*`. Los pull requests ejecutan la construcción de ambas imágenes sin publicarlas.
+
+1. En Docker Hub, crea los repositorios `bilateral-translation-api` y `bilateral-translation-client` bajo el namespace indicado por `DOCKERHUB_USERNAME`.
+2. En GitHub, configura los secrets del repositorio `DOCKERHUB_USERNAME` y `DOCKERHUB_TOKEN`. El token debe ser un Access Token de Docker Hub con permiso de escritura.
+3. Copia `.env.deploy.example` a `.env` en el servidor y completa `DOCKERHUB_USERNAME`, `HF_REPO_ID` y, si el repositorio del modelo es privado, `HF_TOKEN`.
+4. Descarga y levanta las imágenes publicadas:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+El cliente queda disponible en el puerto `CLIENT_PORT` (3000 por defecto). FastAPI solo se expone dentro de la red de Compose; Next.js reenvía las peticiones del navegador a la API. La API descarga el modelo de Hugging Face al iniciar, por lo que su primer arranque puede tardar varios minutos. El endpoint `/health` permite a Compose esperar a que termine esa carga.
+
+Para seleccionar una publicación versionada, cambia `IMAGE_TAG` en `.env` (por ejemplo, `v1.2.0` o `sha-<commit>`). El valor predeterminado `latest` se actualiza desde `main`.
+
 ---
 
 ## 📌 Enfoque de Desarrollo
