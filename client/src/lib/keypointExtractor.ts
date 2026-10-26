@@ -1,37 +1,53 @@
-import { HolisticLandmarkerResult } from "@mediapipe/tasks-vision";
+import type { HolisticLandmarkerResult } from "@mediapipe/tasks-vision";
 
-export function extractKeypoints(results: HolisticLandmarkerResult): number[] {
-  // En tasks-vision, los resultados vienen en arrays de arrays (para múltiples personas).
-  // Solo nos interesa la primera persona detectada ([0]).
+const POSE_OFFSET = 0;
+const FACE_OFFSET = 33 * 4;
+const LEFT_HAND_OFFSET = FACE_OFFSET + 468 * 3;
+const RIGHT_HAND_OFFSET = LEFT_HAND_OFFSET + 21 * 3;
+const KEYPOINT_COUNT = RIGHT_HAND_OFFSET + 21 * 3;
 
-  // Pose: 33 landmarks * 4 (x,y,z,visibility) = 132
-  const poseLandmarks = results.poseLandmarks && results.poseLandmarks.length > 0 ? results.poseLandmarks[0] : null;
-  const pose = poseLandmarks
-    ? poseLandmarks.flatMap((res) => [res.x, res.y, res.z, res.visibility || 0])
-    : new Array(33 * 4).fill(0);
+type Landmark = { x: number; y: number; z: number; visibility?: number };
 
-  // Face: 468 landmarks * 3 (x,y,z) = 1404 (Nota: refineFaceLandmarks debe estar false para que sean 468, si es true son 478)
-  const faceLandmarks = results.faceLandmarks && results.faceLandmarks.length > 0 ? results.faceLandmarks[0] : null;
-  let face = faceLandmarks
-    ? faceLandmarks.flatMap((res) => [res.x, res.y, res.z])
-    : new Array(468 * 3).fill(0);
-    
-  // Cortar a 1404 en caso de que devuelva 478 landmarks (1434)
-  if (face.length > 1404) {
-    face = face.slice(0, 1404);
+function writeLandmarks(
+  target: Float32Array,
+  landmarks: readonly Landmark[] | undefined,
+  offset: number,
+  stride: 3 | 4,
+  limit: number,
+) {
+  if (!landmarks) return;
+
+  const count = Math.min(landmarks.length, limit);
+  for (let index = 0; index < count; index += 1) {
+    const landmark = landmarks[index];
+    const position = offset + index * stride;
+    target[position] = landmark.x;
+    target[position + 1] = landmark.y;
+    target[position + 2] = landmark.z;
+    if (stride === 4) target[position + 3] = landmark.visibility || 0;
   }
+}
 
-  // Left Hand: 21 landmarks * 3 (x,y,z) = 63
-  const lhLandmarks = results.leftHandLandmarks && results.leftHandLandmarks.length > 0 ? results.leftHandLandmarks[0] : null;
-  const lh = lhLandmarks
-    ? lhLandmarks.flatMap((res) => [res.x, res.y, res.z])
-    : new Array(21 * 3).fill(0);
-
-  // Right Hand: 21 landmarks * 3 (x,y,z) = 63
-  const rhLandmarks = results.rightHandLandmarks && results.rightHandLandmarks.length > 0 ? results.rightHandLandmarks[0] : null;
-  const rh = rhLandmarks
-    ? rhLandmarks.flatMap((res) => [res.x, res.y, res.z])
-    : new Array(21 * 3).fill(0);
-
-  return [...pose, ...face, ...lh, ...rh];
+/** Keeps the trained model's pose/face/left-hand/right-hand layout. */
+export function extractKeypoints(
+  results: HolisticLandmarkerResult,
+): Float32Array {
+  const keypoints = new Float32Array(KEYPOINT_COUNT);
+  writeLandmarks(keypoints, results.poseLandmarks?.[0], POSE_OFFSET, 4, 33);
+  writeLandmarks(keypoints, results.faceLandmarks?.[0], FACE_OFFSET, 3, 468);
+  writeLandmarks(
+    keypoints,
+    results.leftHandLandmarks?.[0],
+    LEFT_HAND_OFFSET,
+    3,
+    21,
+  );
+  writeLandmarks(
+    keypoints,
+    results.rightHandLandmarks?.[0],
+    RIGHT_HAND_OFFSET,
+    3,
+    21,
+  );
+  return keypoints;
 }

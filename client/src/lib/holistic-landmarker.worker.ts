@@ -3,6 +3,7 @@ import {
   type HolisticLandmarkerResult,
 } from "@mediapipe/tasks-vision";
 import { BaseWorker } from "./base-worker";
+import { extractKeypoints } from "./keypointExtractor";
 
 type WorkerMessage = {
   type: string;
@@ -59,16 +60,34 @@ class HolisticLandmarkerWorker extends BaseWorker<HolisticLandmarker> {
         );
       }
 
-      const startedAt = performance.now();
+      const inferenceStartedAt = performance.now();
       const result: HolisticLandmarkerResult = this.taskInstance.detectForVideo(
         bitmap,
         data.timestampMs,
       );
-      self.postMessage({
-        type: "DETECT_RESULT",
-        result,
-        inferenceTime: performance.now() - startedAt,
-      });
+      const inferenceMs = performance.now() - inferenceStartedAt;
+      const keypointsStartedAt = performance.now();
+      const keypoints = extractKeypoints(result);
+      const keypointsMs = performance.now() - keypointsStartedAt;
+      (
+        self.postMessage as unknown as (
+          message: unknown,
+          transfer: Transferable[],
+        ) => void
+      )(
+        {
+          type: "DETECT_RESULT",
+          landmarks: {
+            poseLandmarks: result.poseLandmarks,
+            leftHandLandmarks: result.leftHandLandmarks,
+            rightHandLandmarks: result.rightHandLandmarks,
+          },
+          keypoints,
+          inferenceMs,
+          keypointsMs,
+        },
+        [keypoints.buffer as ArrayBuffer],
+      );
     } catch (error) {
       self.postMessage({
         type: "DETECT_ERROR",

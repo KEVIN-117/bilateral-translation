@@ -1,16 +1,9 @@
 "use client";
 
-import { HandMetal, SearchX } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { useState } from "react";
 import { SignSearchInput } from "@/components/molecules/SignSearchInput";
 import { SignVideoPlayer } from "@/components/molecules/SignVideoPlayer";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
 import { getSignByWord, listSigns } from "@/lib/sign-dictionary";
 import type { SignLookupResult } from "@/model/sign.schema";
 
@@ -43,74 +36,77 @@ export function TextToSignTranslator() {
   };
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-10">
-      <section className="flex flex-col gap-6">
+    <section
+      aria-label="Traductor de texto a seña"
+      className="relative min-h-dvh w-full overflow-hidden bg-[#050608]"
+    >
+      {result.status === "found" ? (
+        <SignVideoPlayer entry={result.entry} immersive key={result.entry.id} />
+      ) : (
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 pb-20 pt-36 text-center">
+          <BookOpen
+            aria-hidden="true"
+            className="mb-5 h-10 w-10 text-[#c3c9d1]"
+            strokeWidth={1.6}
+          />
+          <h2 className="text-2xl font-semibold leading-tight text-white sm:text-3xl">
+            {result.status === "not-found"
+              ? "No encontramos esa palabra"
+              : "Busca una palabra"}
+          </h2>
+          <p
+            className="mt-3 max-w-md text-base leading-relaxed text-[#d0d6df]"
+            role={result.status === "not-found" ? "alert" : undefined}
+          >
+            {result.status === "not-found"
+              ? `No tenemos “${result.term}” en el vocabulario actual. Prueba con otra palabra.`
+              : "El video de la seña aparecerá aquí cuando elijas una palabra disponible."}
+          </p>
+        </div>
+      )}
+
+      <aside
+        aria-labelledby="buscar-sena-titulo"
+        className="translator-glass translator-panel absolute left-6 top-24 z-20 w-[min(23rem,calc(100%-3rem))] rounded-2xl p-5 sm:p-6 max-md:left-4 max-md:top-36 2xl:left-10 2xl:top-28"
+      >
+        <h2
+          className="mb-4 text-lg font-semibold text-white"
+          id="buscar-sena-titulo"
+        >
+          Encuentra una seña
+        </h2>
         <SignSearchInput
           onSearch={handleSearch}
           onValueChange={setQuery}
           value={query}
         />
 
-        {result.status === "found" ? (
-          <SignVideoPlayer entry={result.entry} key={result.entry.id} />
-        ) : null}
+        <details className="mt-5 border-t border-white/15 pt-4">
+          <summary className="min-h-11 cursor-pointer py-2 text-sm font-medium text-[#e0e5eb] underline decoration-white/40 underline-offset-4 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c3d5f1]">
+            Vocabulario disponible ({vocabulary.length})
+          </summary>
+          <ul className="mt-3 grid grid-cols-2 gap-2">
+            {vocabulary.map((entry) => (
+              <li key={entry.id}>
+                <button
+                  className="min-h-11 w-full rounded-md bg-white/10 px-3 py-2 text-left text-sm font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c3d5f1]"
+                  onClick={() => handleVocabularyClick(entry.word)}
+                  type="button"
+                >
+                  {entry.word}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </details>
 
-        {result.status === "not-found" ? (
-          <Empty className="glass-card min-h-[18rem] border border-white/10 border-dashed">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <SearchX className="text-gray-400" />
-              </EmptyMedia>
-              <EmptyTitle className="text-base text-white">
-                Seña no encontrada
-              </EmptyTitle>
-              <EmptyDescription>
-                Todavía no tenemos la seña para{" "}
-                <span className="font-medium text-white">
-                  &quot;{result.term}&quot;
-                </span>
-                . Prueba con otra palabra del vocabulario disponible.
-              </EmptyDescription>
-            </EmptyHeader>
-          </Empty>
-        ) : null}
-
-        {result.status === "idle" ? (
-          <Empty className="glass-card min-h-[18rem] border border-white/10 border-dashed">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <HandMetal className="text-gray-400" />
-              </EmptyMedia>
-              <EmptyTitle className="text-base text-white">
-                Busca una seña
-              </EmptyTitle>
-              <EmptyDescription>
-                Escribe una palabra y te mostramos el video que enseña cómo se
-                hace en lengua de señas.
-              </EmptyDescription>
-            </EmptyHeader>
-          </Empty>
-        ) : null}
-      </section>
-
-      <aside className="glass-card flex flex-col gap-4 p-5 sm:p-6">
-        <h2 className="text-center font-heading font-medium text-gray-400 text-sm uppercase tracking-wide lg:text-left">
-          Vocabulario disponible ({vocabulary.length})
-        </h2>
-
-        <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
-          {vocabulary.map((entry) => (
-            <button
-              className="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-gray-300 text-sm backdrop-blur-md transition-all hover:border-white/20 hover:bg-white/10 hover:text-white"
-              key={entry.id}
-              onClick={() => handleVocabularyClick(entry.word)}
-              type="button"
-            >
-              {entry.word}
-            </button>
-          ))}
-        </div>
+        {result.status === "found" && (
+          <p className="mt-4 flex items-start gap-2 text-sm leading-relaxed text-[#d8dee6]">
+            <BookOpen aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
+            Seña de LSB boliviana.
+          </p>
+        )}
       </aside>
-    </div>
+    </section>
   );
 }
