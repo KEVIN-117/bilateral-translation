@@ -19,6 +19,7 @@ coverage/
 .env.*
 !.env.example
 !.env.template
+!.env.deploy.example
 
 # Local tooling and operating system files
 .vscode/

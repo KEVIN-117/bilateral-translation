@@ -1,0 +1,14 @@
+.git
+.venv
+__pycache__
+*.py[cod]
+.env
+.env.*
+!.env.example
+*.h5
+*.keras
+*.pb
+*.tflite
+saved_model
+checkpoints
+README.md

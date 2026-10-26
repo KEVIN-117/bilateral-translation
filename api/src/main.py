@@ -29,5 +29,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/health", tags=["Health"])
+def health():
+    return {"status": "ok", "model_loaded": inference_model.model is not None}
+
 app.include_router(router)
 app.include_router(signs_router)

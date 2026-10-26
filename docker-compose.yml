@@ -1,29 +1,30 @@
-version: '3.8'
-
 services:
   api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
-    container_name: bilateral_translation_api
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/bilateral-translation-api:${IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file:
-      - ./api/.env
     environment:
-      - 
-    ports:
-      - '8000:8000'
+      HF_REPO_ID: ${HF_REPO_ID:?Set HF_REPO_ID in .env}
+      HF_FILENAME: ${HF_FILENAME:-model.h5}
+      HF_TOKEN: ${HF_TOKEN:-}
+      SIGNS_VIDEO_BASE_URL: ${SIGNS_VIDEO_BASE_URL:-/videos}
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 5m
+      retries: 3
 
   client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    container_name: bilateral_translation_client
+    image: ${DOCKERHUB_USERNAME:?Set DOCKERHUB_USERNAME in .env}/bilateral-translation-client:${IMAGE_TAG:-latest}
     restart: unless-stopped
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_STRAPI_URL=http://api:1337
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
     ports:
-      - '3000:3000'
+      - "${CLIENT_PORT:-3000}:3000"
