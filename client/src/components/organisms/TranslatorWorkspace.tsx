@@ -1,34 +1,16 @@
-import { HandMetal, Keyboard, Video } from "lucide-react";
+import { HandMetal } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-
-export type TranslationDirection = "sign-to-text" | "text-to-sign";
-
-const directions: {
-  href: string;
-  label: string;
-  direction: TranslationDirection;
-  icon: typeof Video;
-}[] = [
-  {
-    href: "/traductor/sena-a-texto",
-    label: "Seña → texto",
-    direction: "sign-to-text",
-    icon: Video,
-  },
-  {
-    href: "/traductor/texto-a-sena",
-    label: "Texto → seña",
-    direction: "text-to-sign",
-    icon: Keyboard,
-  },
-];
+import {
+  TRANSLATOR_MODES,
+  type TranslatorDirection,
+} from "@/lib/translator-modes";
 
 export function TranslatorWorkspace({
   direction,
   children,
 }: {
-  direction: TranslationDirection;
+  direction: TranslatorDirection;
   children: ReactNode;
 }) {
   return (
@@ -60,7 +42,7 @@ export function TranslatorWorkspace({
           aria-label="Dirección de traducción"
           className="translator-glass flex min-h-12 items-center gap-1 rounded-xl p-1 max-md:col-span-2 max-md:row-start-2 max-md:w-full md:justify-self-center"
         >
-          {directions.map((item) => {
+          {TRANSLATOR_MODES.map((item) => {
             const isActive = item.direction === direction;
             const Icon = item.icon;
 

@@ -5,7 +5,7 @@ on:
     branches: [main]
   push:
     branches: [main]
-    tags: ['v*']
+    tags: ["v*"]
   workflow_dispatch:
 
 permissions:
@@ -31,7 +31,7 @@ jobs:
             context: ./client
             dockerfile: ./client/Dockerfile
             image: bilateral-translation-client
-            build_args: ML_API_INTERNAL_URL=http://api:8000/api/v1
+            build_args: ML_API_INTERNAL_URL=https://bilateral-translation-api.onrender.com/api/v1
 
     steps:
       - name: Check out source
