@@ -7,7 +7,7 @@ import axios from "axios";
  * no depende del hostname interno de Docker ni requiere CORS en producción.
  */
 export const mlApiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_ML_API_URL ?? "/api/ml/api/v1",
+  baseURL: process.env.NEXT_PUBLIC_ML_API_URL ?? "/api/ml",
   timeout: 15000,
   headers: {
     "Content-Type": "application/json",

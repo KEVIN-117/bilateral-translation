@@ -8,7 +8,7 @@ import {
   SEQUENCE_LENGTH,
 } from "@/model/prediction.schema";
 
-const PREDICT_PATH = "/api/v1/predict";
+const PREDICT_PATH = "/predict";
 
 /**
  * Valida la secuencia antes de gastar red.
