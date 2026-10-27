@@ -23,9 +23,10 @@ const DETECTION_INTERVAL_MS = 1_000 / MAX_DETECTION_FPS;
 const PREDICTION_INTERVAL_MS = 750;
 const STABILITY_WINDOW = 3;
 const WORKER_TIMEOUT_MS = 30_000;
-const ML_API_URL = (
-  process.env.NEXT_PUBLIC_ML_API_URL ?? "/api/ml/api/v1"
-).replace(/\/$/, "");
+const ML_API_URL = (process.env.NEXT_PUBLIC_ML_API_URL ?? "/api/ml").replace(
+  /\/$/,
+  "",
+);
 
 type WorkerStatus = "loading" | "ready" | "error";
 type Prediction = { action: string; confidence: number };
