@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toast";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -14,9 +13,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "SOCITEC | Sociedad Científica de Ingeniería de Sistemas",
+  title: "Traductor LSB boliviana | SOCITEC",
   description:
-    "Ingeniería que transforma. Ciencia que trasciende. Sociedad Científica de Ingeniería de Sistemas y Tecnología de la Universidad Autónoma Tomás Frías.",
+    "Explora la traducción de seña a texto y el diccionario de texto a seña en LSB boliviana.",
 };
 
 export const viewport: Viewport = {
@@ -36,10 +35,7 @@ export default function RootLayout({
       lang="es"
       className={`dark ${inter.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">
-        {children}
-        <Toaster />
-      </body>
+      <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );
 }

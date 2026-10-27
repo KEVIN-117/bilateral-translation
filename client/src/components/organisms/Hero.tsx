@@ -1,165 +1,136 @@
-import { ArrowRight, Code, Cpu, Database, Network } from "lucide-react";
-import Image from "next/image";
+import { ArrowRight, BookOpen, Camera, HandMetal } from "lucide-react";
 import Link from "next/link";
 import { Container } from "@/components/atoms/Container";
-import { glassButtonVariants } from "@/components/atoms/GlassButton";
 
-const CircuitPattern = () => (
-  <svg
-    aria-hidden="true"
-    className="pointer-events-none absolute inset-0 h-full w-full opacity-10 mix-blend-screen"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <defs>
-      <pattern
-        id="circuit-board"
-        width="120"
-        height="120"
-        patternUnits="userSpaceOnUse"
-      >
-        <path
-          d="M 10 10 L 30 10 L 40 20 L 40 40 M 60 10 L 80 10 L 90 20 L 90 40 M 10 60 L 30 60 L 40 70 L 40 90 M 60 60 L 80 60 L 90 70 L 90 90 M 40 20 L 60 20 M 40 70 L 60 70"
-          stroke="#72004c"
-          strokeWidth="1.5"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M 110 50 L 90 50 L 80 40 L 80 20 M 110 110 L 90 110 L 80 100 L 80 80 M 50 50 L 30 50 L 20 40 L 20 20 M 50 110 L 30 110 L 20 100 L 20 80"
-          stroke="#006f87"
-          strokeWidth="1.5"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <circle cx="10" cy="10" r="2.5" fill="#72004c" />
-        <circle cx="60" cy="10" r="2.5" fill="#72004c" />
-        <circle cx="40" cy="40" r="2.5" fill="#72004c" />
-        <circle cx="90" cy="40" r="2.5" fill="#72004c" />
-        <circle cx="110" cy="50" r="2.5" fill="#006f87" />
-        <circle cx="80" cy="20" r="2.5" fill="#006f87" />
-        <circle cx="50" cy="50" r="2.5" fill="#006f87" />
-        <circle cx="20" cy="20" r="2.5" fill="#006f87" />
-      </pattern>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#circuit-board)" />
-  </svg>
-);
+const modeLinkClass =
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#c3d5f1]";
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden py-12 sm:py-16 md:min-h-[calc(100svh-5rem)]">
-      <CircuitPattern />
-
-      {/* Background Orbs */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[280px] sm:w-[400px] md:w-[600px] h-[280px] sm:h-[400px] md:h-[600px] bg-[#72004c] rounded-full blur-[100px] md:blur-[150px] opacity-20 mix-blend-screen animate-pulse pointer-events-none" />
-      <div
-        className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[280px] sm:w-[400px] md:w-[600px] h-[280px] sm:h-[400px] md:h-[600px] bg-[#006f87] rounded-full blur-[100px] md:blur-[150px] opacity-20 mix-blend-screen animate-pulse pointer-events-none"
-        style={{ animationDelay: "2s" }}
-      />
-
+    <section
+      aria-labelledby="home-title"
+      className="relative isolate overflow-hidden"
+    >
       <Container className="relative z-10">
-        <div className="mx-auto max-w-4xl space-y-6 text-center sm:space-y-8">
-          {/* Logo Sociedad */}
-          <div className="flex justify-center mb-4">
-            <div className="relative group">
-              <div className="absolute -inset-4 bg-gradient-to-r from-[#72004c] to-[#006f87] rounded-full blur-xl opacity-40 group-hover:opacity-70 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-              <Image
-                src="/logosociedad.png"
-                alt="Logo SOCITEC"
-                width={500}
-                height={500}
-                className="relative z-10 h-auto w-40 drop-shadow-2xl transition-transform duration-500 hover:scale-105 sm:w-56 md:w-72"
-                sizes="(max-width: 640px) 10rem, (max-width: 768px) 14rem, 18rem"
-                priority
-              />
+        <div className="grid min-h-[min(780px,calc(100svh-76px))] items-center gap-10 py-12 sm:py-16 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-20">
+          <div className="max-w-2xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#8da9d5]/25 bg-[#8da9d5]/[0.08] px-3 py-1.5 text-sm font-medium text-[#c3d5f1]">
+              <HandMetal aria-hidden="true" className="h-4 w-4" />
+              LSB boliviana
             </div>
-          </div>
 
-          <div className="glass inline-flex items-center gap-2 rounded-full border-[#72004c]/30 px-4 py-2 text-center font-medium text-white/90 text-xs sm:gap-3 sm:px-5 sm:text-sm">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#72004c] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#72004c]"></span>
-            </span>
-            Sociedad Científica de Ingeniería de Sistemas y Tecnología
-          </div>
-
-          <h1 className="text-balance font-extrabold text-3xl text-white leading-[1.1] tracking-tighter sm:text-5xl md:text-7xl lg:text-8xl">
-            Ingeniería que{" "}
-            <span className="text-gradient-purple block md:inline">
-              transforma.
-            </span>
-            <br className="hidden md:block" /> Ciencia que{" "}
-            <span className="text-gradient-blue block md:inline">
-              trasciende.
-            </span>
-          </h1>
-
-          <p className="mx-auto max-w-2xl font-light text-base text-gray-400 leading-relaxed sm:text-lg md:text-xl">
-            Un espacio de encuentro para la innovación, la investigación y la
-            formación académica de excelencia en la Universidad Autónoma Tomás
-            Frías.
-          </p>
-
-          <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row sm:gap-4 sm:pt-4">
-            <Link
-              className={glassButtonVariants({
-                variant: "primary",
-                size: "lg",
-                className: "group w-full sm:w-auto",
-              })}
-              href="/traductor"
+            <h1
+              className="max-w-[13ch] text-balance font-semibold text-4xl leading-[1.08] tracking-[-0.035em] text-white sm:text-5xl lg:text-6xl xl:text-7xl"
+              id="home-title"
             >
-              Traducir texto
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link
-              className={glassButtonVariants({
-                variant: "secondary",
-                size: "lg",
-                className: "w-full sm:w-auto",
-              })}
-              href="/camara"
-            >
-              Probar la cámara
-            </Link>
+              Una seña también puede abrir una conversación.
+            </h1>
+
+            <p className="mt-6 max-w-[58ch] text-base leading-7 text-[#c3c9d1] sm:text-lg sm:leading-8">
+              Explora las dos direcciones del traductor: muestra una seña a la
+              cámara o escribe una palabra para ver su video en lengua de señas.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                className={`${modeLinkClass} bg-[#4d6999] text-white shadow-[0_8px_24px_rgba(25,47,83,0.28)] hover:bg-[#5c79aa]`}
+                href="/traductor/sena-a-texto"
+              >
+                <Camera aria-hidden="true" className="h-5 w-5" />
+                Abrir cámara
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </Link>
+              <Link
+                className={`${modeLinkClass} translator-glass text-[#edf1f6] hover:bg-white/10`}
+                href="/traductor/texto-a-sena"
+              >
+                <BookOpen aria-hidden="true" className="h-5 w-5" />
+                Explorar el diccionario
+              </Link>
+            </div>
+
+            <p className="mt-6 max-w-[58ch] text-sm leading-6 text-[#aeb8c7]">
+              El reconocimiento por cámara identifica Hola, Gracias y Te amo. El
+              diccionario incluye diez señas con videos de referencia.
+            </p>
           </div>
 
-          <div className="mx-auto grid max-w-3xl grid-cols-2 gap-3 pt-10 sm:gap-4 sm:pt-16 md:grid-cols-4 md:gap-6">
-            <div className="glass-card group flex flex-col items-center gap-2 p-4 sm:gap-3 sm:p-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#72004c]/20 transition-transform group-hover:scale-110 sm:h-12 sm:w-12">
-                <Code className="text-[#72004c] w-6 h-6" />
+          <aside
+            aria-label="Opciones de traducción disponibles"
+            className="translator-glass relative overflow-hidden rounded-2xl p-5 sm:rounded-3xl sm:p-8"
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#8da9d5]/10 blur-3xl"
+            />
+            <div className="relative">
+              <p className="text-xs font-semibold tracking-[0.16em] text-[#aeb8c7] uppercase">
+                Traducción en dos direcciones
+              </p>
+              <h2 className="mt-3 max-w-[18ch] text-2xl font-semibold leading-tight text-white sm:text-3xl">
+                Elige cómo quieres comunicarte.
+              </h2>
+
+              <div className="mt-7 space-y-3">
+                <Link
+                  className="group flex min-h-20 items-center justify-between gap-4 rounded-2xl border border-[#8da9d5]/30 bg-[#8da9d5]/[0.1] p-4 transition-colors hover:bg-[#8da9d5]/[0.16] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#c3d5f1]"
+                  href="/traductor/sena-a-texto"
+                >
+                  <span className="flex items-center gap-4">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#8da9d5]/15 text-[#c3d5f1]">
+                      <Camera aria-hidden="true" className="size-5" />
+                    </span>
+                    <span>
+                      <span className="block font-semibold text-white">
+                        Seña a texto
+                      </span>
+                      <span className="mt-1 block text-sm text-[#c3c9d1]">
+                        Usa la cámara para traducir
+                      </span>
+                    </span>
+                  </span>
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="size-5 shrink-0 text-[#c3d5f1] transition-transform group-hover:translate-x-1"
+                  />
+                </Link>
+
+                <Link
+                  className="group flex min-h-20 items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 p-4 transition-colors hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#c3d5f1]"
+                  href="/traductor/texto-a-sena"
+                >
+                  <span className="flex items-center gap-4">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/[0.07] text-[#dce4ef]">
+                      <BookOpen aria-hidden="true" className="size-5" />
+                    </span>
+                    <span>
+                      <span className="block font-semibold text-white">
+                        Texto a seña
+                      </span>
+                      <span className="mt-1 block text-sm text-[#c3c9d1]">
+                        Consulta el diccionario visual
+                      </span>
+                    </span>
+                  </span>
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="size-5 shrink-0 text-[#aeb8c7] transition-transform group-hover:translate-x-1"
+                  />
+                </Link>
               </div>
-              <span className="font-medium text-gray-300 text-xs sm:text-sm">
-                Software
-              </span>
-            </div>
-            <div className="glass-card group flex flex-col items-center gap-2 p-4 sm:gap-3 sm:p-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#006f87]/20 transition-transform group-hover:scale-110 sm:h-12 sm:w-12">
-                <Database className="text-[#006f87] w-6 h-6" />
+
+              <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/10 pt-5 text-sm text-[#c3c9d1]">
+                <span className="inline-flex items-center gap-2">
+                  <HandMetal
+                    aria-hidden="true"
+                    className="size-4 text-[#c3d5f1]"
+                  />
+                  3 señas reconocidas por cámara
+                </span>
+                <span>10 entradas en el diccionario</span>
               </div>
-              <span className="font-medium text-gray-300 text-xs sm:text-sm">
-                Datos
-              </span>
             </div>
-            <div className="glass-card group flex flex-col items-center gap-2 p-4 sm:gap-3 sm:p-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#72004c]/20 transition-transform group-hover:scale-110 sm:h-12 sm:w-12">
-                <Network className="text-[#72004c] w-6 h-6" />
-              </div>
-              <span className="font-medium text-gray-300 text-xs sm:text-sm">
-                Redes
-              </span>
-            </div>
-            <div className="glass-card group flex flex-col items-center gap-2 p-4 sm:gap-3 sm:p-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#006f87]/20 transition-transform group-hover:scale-110 sm:h-12 sm:w-12">
-                <Cpu className="text-[#006f87] w-6 h-6" />
-              </div>
-              <span className="font-medium text-gray-300 text-xs sm:text-sm">
-                Arquitectura
-              </span>
-            </div>
-          </div>
+          </aside>
         </div>
       </Container>
     </section>

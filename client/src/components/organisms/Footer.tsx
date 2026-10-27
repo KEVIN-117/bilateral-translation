@@ -1,93 +1,65 @@
-import { Cpu } from "lucide-react";
+import { HandMetal } from "lucide-react";
 import Link from "next/link";
 import { Container } from "@/components/atoms/Container";
-import { MAIN_NAV } from "@/lib/navigation";
+import { TRANSLATOR_MODES } from "@/lib/translator-modes";
 
 export function Footer() {
   return (
-    <footer
-      className="relative z-10 mt-16 border-white/10 border-t bg-[#040406]/80 sm:mt-24"
-      id="contacto"
-    >
-      <Container className="py-10 sm:py-12">
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
+    <footer className="border-t border-white/10 bg-[#050608]/75">
+      <Container className="py-8 sm:py-10">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1fr_auto_auto] lg:items-start">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#72004c] to-[#006f87] p-[1px]">
-                <div className="w-full h-full rounded-lg bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                  <Cpu className="text-white w-4 h-4" />
-                </div>
-              </div>
-              <span className="font-heading font-bold text-lg tracking-wider text-white">
-                SOCITEC
+            <Link
+              aria-label="SOCITEC, ir al inicio"
+              className="inline-flex min-h-11 items-center gap-2.5 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#c3d5f1]"
+              href="/"
+            >
+              <HandMetal
+                aria-hidden="true"
+                className="h-5 w-5 text-[#8da9d5]"
+                strokeWidth={1.8}
+              />
+              <span className="font-semibold text-sm tracking-[0.14em] text-white">
+                SOCITEC · UATF
               </span>
-            </div>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Sociedad Científica de Ingeniería de Sistemas y Tecnología.
-              Universidad Autónoma "Tomás Frías", Potosí, Bolivia.
+            </Link>
+            <p className="mt-3 max-w-md text-sm leading-6 text-[#aeb8c7]">
+              Proyecto demostrativo de traducción bilateral en LSB boliviana.
             </p>
           </div>
 
-          <div>
-            <h4 className="text-white font-semibold mb-4 font-heading">
-              Enlaces
-            </h4>
-            <ul className="space-y-2 text-gray-400 text-sm">
-              {MAIN_NAV.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    className="transition-colors hover:text-white"
-                    href={link.href}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link
-                  className="transition-colors hover:text-white"
-                  href="/#mision"
-                >
-                  Misión y Visión
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <nav aria-label="Traductor" className="flex flex-col items-start">
+            <h2 className="mb-2 font-medium text-sm text-[#edf1f6]">
+              Traducir
+            </h2>
+            {TRANSLATOR_MODES.map((mode) => (
+              <Link
+                className="inline-flex min-h-10 items-center text-sm text-[#aeb8c7] underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c3d5f1]"
+                href={mode.href}
+                key={mode.direction}
+              >
+                {mode.label}
+              </Link>
+            ))}
+          </nav>
 
-          <div>
-            <h4 className="text-white font-semibold mb-4 font-heading">
+          <div className="flex flex-col items-start">
+            <h2 className="mb-2 font-medium text-sm text-[#edf1f6]">
               Contacto
-            </h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li>Av. Las Banderas 222</li>
-              <li>Ciudadela Universitaria, Bloque 3</li>
-              <li>Villa Imperial de Potosí</li>
-              <li className="break-all">
-                <a
-                  href="mailto:contacto@socitec.uatf.edu.bo"
-                  className="transition-colors hover:text-white"
-                >
-                  contacto@socitec.uatf.edu.bo
-                </a>
-              </li>
-            </ul>
+            </h2>
+            <a
+              className="inline-flex min-h-10 items-center text-sm text-[#aeb8c7] underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c3d5f1]"
+              href="mailto:contacto@socitec.uatf.edu.bo"
+            >
+              contacto@socitec.uatf.edu.bo
+            </a>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-white/10 border-t pt-8 text-center text-gray-500 text-xs sm:mt-12 md:flex-row md:gap-0 md:text-left">
-          <p>
-            &copy; {new Date().getFullYear()} SOCITEC UATF. Todos los derechos
-            reservados.
-          </p>
-          <div className="space-x-4">
-            <a href="#" className="hover:text-white transition-colors">
-              Privacidad
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
-              Términos
-            </a>
-          </div>
-        </div>
+        <p className="mt-8 border-t border-white/10 pt-5 text-xs text-[#aeb8c7]">
+          © {new Date().getFullYear()} SOCITEC · Universidad Autónoma Tomás
+          Frías, Potosí.
+        </p>
       </Container>
     </footer>
   );
